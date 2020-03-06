@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Danny Boy Jazz&Blues",
+    "slug": "dbjabmbl2_0",
+    "privacy": "public",
+    "sdkVersion": "36.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/DBJAB_logo_100x100.png",
+    "scheme": "myapp",
+    "splash": {
+      "image": "./assets/images/DBJAB_logo_500x500.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    }
+  }
+}
