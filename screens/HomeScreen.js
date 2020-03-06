@@ -30,6 +30,11 @@ const buttonList = [
     navText: "Gigs By Venue",
     icon: "restaurant",
   },
+  {
+    id: 6,
+    navText: "Favourites",
+    icon: "heart",
+  },
 ]
 
 const navButtonArray = buttonList.map(button => {
