@@ -8,17 +8,19 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderBackground } from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen'
 import Colors  from './constants/Colors'
+import {useGlobal} from 'reactn';
+import JSON5 from 'json5';
 
 import useLinking from './navigation/useLinking';
 
-const eventsAPI = 'https://5amdysgq4a.execute-api.eu-west-1.amazonaws.com/default';
+const eventsAPI = 'https://5amdysgq4a.execute-api.eu-west-1.amazonaws.com/default/dbJabEvents';
 
 const Stack = createStackNavigator();
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState();
-  const [eventsData, setEventsData] = React.useState([]);
+  const [eventsData, setEventsData] = useGlobal('EVENTS');
   const containerRef = React.useRef();
   const { getInitialState } = useLinking(containerRef);
 
@@ -44,11 +46,10 @@ export default function App(props) {
   
 
         //Load events
-        console.log("Calling API....")
-        // var response = await fetch(eventsAPI);
-        // apiData = await response.json();
-        // setEventsData(apiData);
-
+        var response = await fetch(eventsAPI);
+        apiData = await response.json();
+        console.log("Array?:", apiData.body)
+        setEventsData(JSON.parse(apiData.body));  
       } catch (e) {
         // We might want to provide this error information to an error reporting service
         console.warn(e);

@@ -5,10 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 
 export default function HomeNavButton(props) {
+
   return (
     <TouchableOpacity 
         style={styles.navButtonStyle}
-        onPress={pressed}
+        onPress={() => { props.pressed(props.id, props.text)}}
     >
             <Text style={styles.navButtontext}>{props.text}</Text>
             <Ionicons
@@ -20,11 +21,6 @@ export default function HomeNavButton(props) {
     </TouchableOpacity>
   );
 }
-
-function pressed() {
-    alert("Yup");
-}
-
 
 const styles = StyleSheet.create({
     navButtonStyle: {
