@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ScrollView, LongPressGestureHandler } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors'
 import HomeNavButton from '../components/HomeNavButton'
@@ -7,6 +7,7 @@ import EventsList from '../components/EventsList'
 import {useGlobal} from 'reactn';
 import Modal from "react-native-modal";
 import moment from 'moment';
+import { Button } from 'react-native-elements'
 
 const buttonList = [
   {
@@ -46,6 +47,13 @@ export default function HomeScreen() {
   const [eventsData, setEventsData] = useGlobal('EVENTS');
   const [modalEventsList, setModalEventsList] = React.useState([]);
   const [modalShow, setModalShow] = React.useState(false);
+
+  const NoEvents = [
+    {
+      Title: "No events on currently",
+      Thumbnail: 'https://s3-eu-west-1.amazonaws.com/dbjabmbl.events.xml/DBJAB_logo_100x100.png'
+    }
+  ]
   
   const pressed = (key, text) => {
 
@@ -54,19 +62,23 @@ export default function HomeScreen() {
         var filterList = eventsData.filter(event => {
           return moment().isBetween(moment(event.startTime, 'X'), moment(event.endtime, 'X'));
         })
-        if(filterList.length == 0) {
-          filterList = [
-            {
-              Title: "No events on currently",
-              Thumbnail: 'https://s3-eu-west-1.amazonaws.com/dbjabmbl.events.xml/DBJAB_logo_100x100.png'
-            }
-          ]
-        }
-        console.log("Setting:", filterList)
+        if(filterList.length == 0) filterList = NoEvents;
         setModalEventsList(filterList);
         setModalShow(true);
         break;
-      default:
+
+      case "What's On Next":
+        console.log("Events:", eventsData)
+        var filterList = eventsData.filter(event => {
+          return moment().isBefore(moment(event.startTime, 'X'));
+        })
+        if(filterList.length == 0) filterList = NoEvents;
+        filterList=filterList.filter((item, idx) => {return idx<5})
+        setModalEventsList(filterList);
+        setModalShow(true);
+        break;
+      
+        default:
         alert("Pressed " + text);
         break;
     }
@@ -89,10 +101,18 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Modal isVisible={modalShow}>
+      <Modal 
+        isVisible={modalShow}
+        animationInTiming={500}
+      >
         <View style={styles.eventList}>
           <EventsList data={modalEventsList} />
-          <Button title="Hide modal" onPress={toggleModal} />
+          <Button 
+            buttonStyle={styles.closeButtonBackGround} 
+            titleStyle={styles.closeButtonText} 
+            title="Close" 
+            onPress={toggleModal}
+          />
         </View>
       </Modal>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -111,6 +131,12 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
     paddingTop: 10,
+  },
+  closeButtonBackGround: {
+    backgroundColor: Colors.primaryColour,
+  },
+  closeButtonText: {
+    color: Colors.secondaryColour,
   },
   eventList: {
     backgroundColor: Colors.backGroundPrimary,
