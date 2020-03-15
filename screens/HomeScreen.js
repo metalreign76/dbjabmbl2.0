@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { ScrollView, LongPressGestureHandler } from 'react-native-gesture-handler';
+import { StyleSheet, View, Text } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors'
 import HomeNavButton from '../components/HomeNavButton'
 import EventsList from '../components/EventsList'
@@ -8,6 +8,9 @@ import {useGlobal} from 'reactn';
 import Modal from "react-native-modal";
 import moment from 'moment';
 import { Button } from 'react-native-elements'
+import Carousel from 'react-native-snap-carousel';
+import { WebView } from 'react-native-webview'
+import {removeImageSizes} from '../components/Utilities'
 
 const buttonList = [
   {
@@ -45,13 +48,16 @@ const buttonList = [
 
 export default function HomeScreen() {
   const [eventsData, setEventsData] = useGlobal('EVENTS');
+  const [newsData, setNewsData] = useGlobal('NEWS');
   const [modalEventsList, setModalEventsList] = React.useState([]);
-  const [modalShow, setModalShow] = React.useState(false);
+  const [eventsModalShow, setEventsModalShow] = React.useState(false);
+  const [newsModalShow, setNewsModalShow] = React.useState(false);
+  var myRef = React.useRef();
 
   const NoEvents = [
     {
       Title: "No events on currently",
-      Thumbnail: 'https://s3-eu-west-1.amazonaws.com/dbjabmbl.events.xml/DBJAB_logo_100x100.png'
+      Thumbnail: require('../assets/images/DBJAB_logo_100x100.png')
     }
   ]
   
@@ -64,29 +70,36 @@ export default function HomeScreen() {
         })
         if(filterList.length == 0) filterList = NoEvents;
         setModalEventsList(filterList);
-        setModalShow(true);
+        setEventsModalShow(true);
         break;
 
       case "What's On Next":
-        console.log("Events:", eventsData)
         var filterList = eventsData.filter(event => {
           return moment().isBefore(moment(event.startTime, 'X'));
         })
         if(filterList.length == 0) filterList = NoEvents;
         filterList=filterList.filter((item, idx) => {return idx<5})
         setModalEventsList(filterList);
-        setModalShow(true);
+        setEventsModalShow(true);
         break;
-      
-        default:
+
+      case "News":
+        setNewsModalShow(true);
+        break;
+  
+      default:
         alert("Pressed " + text);
         break;
     }
   }
 
   
-  const toggleModal = () => {
-    setModalShow(!modalShow);
+  const toggleEventsModal = () => {
+    setEventsModalShow(!eventsModalShow);
+  };
+  
+  const toggleNewsModal = () => {
+    setNewsModalShow(!newsModalShow);
   };
 
   const navButtonArray = buttonList.map(button => {
@@ -99,10 +112,23 @@ export default function HomeScreen() {
     />
   })
 
+  
+  const renderNewsItem = ({item, index}) => {
+    console.log("Item:", removeImageSizes(item.content.rendered))
+    return (
+      <WebView
+        source={{ html: removeImageSizes(item.content.rendered)}}
+        contentInset={{top: 10, left: 5, bottom: 10, right: 5}}
+        style={{backgroundColor: '#fff'}}
+        scalesPageToFit={false}
+      />
+    )
+}
+
   return (
     <View style={styles.container}>
       <Modal 
-        isVisible={modalShow}
+        isVisible={eventsModalShow}
         animationInTiming={500}
       >
         <View style={styles.eventList}>
@@ -111,9 +137,26 @@ export default function HomeScreen() {
             buttonStyle={styles.closeButtonBackGround} 
             titleStyle={styles.closeButtonText} 
             title="Close" 
-            onPress={toggleModal}
+            onPress={toggleEventsModal}
           />
         </View>
+      </Modal>
+      <Modal 
+        isVisible={newsModalShow}
+        animationType={'slide'}
+      >
+        <Carousel
+              data={newsData}
+              renderItem={renderNewsItem}
+              sliderWidth={330}
+              itemWidth={280}
+        />
+        <Button 
+          buttonStyle={styles.closeButtonBackGround} 
+          titleStyle={styles.closeButtonText} 
+          title="Close" 
+          onPress={toggleNewsModal}
+        />
       </Modal>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         {navButtonArray}
@@ -121,6 +164,7 @@ export default function HomeScreen() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

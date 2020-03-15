@@ -9,7 +9,7 @@ import { createStackNavigator, HeaderBackground } from '@react-navigation/stack'
 import HomeScreen from './screens/HomeScreen'
 import Colors  from './constants/Colors'
 import {useGlobal} from 'reactn';
-import JSON5 from 'json5';
+import wpAPI from 'wpapi'
 
 import useLinking from './navigation/useLinking';
 
@@ -21,6 +21,7 @@ export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState();
   const [eventsData, setEventsData] = useGlobal('EVENTS');
+  const [newsData, setNewsData] = useGlobal('NEWS');
   const containerRef = React.useRef();
   const { getInitialState } = useLinking(containerRef);
 
@@ -42,14 +43,22 @@ export default function App(props) {
 
         await Asset.loadAsync([ 
           require('./assets/images/banner2.png'),
+          require('./assets/images/DBJAB_logo_100x100.png'),
         ]);
   
 
         //Load events
         var response = await fetch(eventsAPI);
         apiData = await response.json();
-        console.log("Array?:", apiData.body)
+        // console.log("Array?:", apiData.body)
         setEventsData(JSON.parse(apiData.body));  
+
+        //Load News       
+        var wp = new wpAPI({ endpoint: 'http://www.dannyboyjazzandblues.com/wp-json' })
+        const thisYear = new Date().getFullYear();
+        var news = await wp.posts().categories( 3 ).param( 'after', new Date(thisYear + '-01-01' ))
+        // console.log("News:", news);
+        setNewsData(news);
       } catch (e) {
         // We might want to provide this error information to an error reporting service
         console.warn(e);
