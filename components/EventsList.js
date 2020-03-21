@@ -1,21 +1,16 @@
 import * as React from 'react';
-import { Text, Platform, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Text, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements'
 import moment from 'moment';
 
-
 import {decode, extractImage} from './Utilities'
-
 import Colors from '../constants/Colors';
 
 export default function EventsList(props) {
 
-  // console.log("Data:", props.data)
-
   return (
     props.data.map((event, idx) => {
-      return <ListItem
+      return (<ListItem
         key={idx}
         leftAvatar={ event.Venue ? { 
           source: { uri: extractImage(event.Thumbnail) } ,
@@ -32,10 +27,11 @@ export default function EventsList(props) {
         subtitleStyle={styles.eventsSubtitle}
         onPress={() => { 
           if(!event.Venue) return;
-          alert("Pressed " + props.data[idx].Title)
+          props.toggle(idx);
         }}
         bottomDivider
       />
+      )
     })
   )
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors'
 import HomeNavButton from '../components/HomeNavButton'
@@ -7,10 +7,10 @@ import EventsList from '../components/EventsList'
 import {useGlobal} from 'reactn';
 import Modal from "react-native-modal";
 import moment from 'moment';
-import { Button } from 'react-native-elements'
+import { Button, Image } from 'react-native-elements'
 import Carousel from 'react-native-snap-carousel';
 import { WebView } from 'react-native-webview'
-import {removeImageSizes} from '../components/Utilities'
+import {removeImageSizes, extractImage} from '../components/Utilities'
 
 const buttonList = [
   {
@@ -45,14 +45,34 @@ const buttonList = [
   },
 ]
 
+var dayButtonPressedStatus = [];
+
 
 export default function HomeScreen() {
   const [eventsData, setEventsData] = useGlobal('EVENTS');
   const [newsData, setNewsData] = useGlobal('NEWS');
   const [modalEventsList, setModalEventsList] = React.useState([]);
   const [eventsModalShow, setEventsModalShow] = React.useState(false);
+  const [eventDetailShow, setEventDetailShow] = React.useState(false);
   const [newsModalShow, setNewsModalShow] = React.useState(false);
-  var myRef = React.useRef();
+  const [eventDetailIdx, setEventDetailIdx] = React.useState(-1);
+  const [gigScheduleShow, setGigScheduleShow] = React.useState(false);
+  const [festivalDays, setFestivalDays] = React.useState([]);
+  const [dayButtonPressed, setDayButtonPressed] = React.useState(false);
+
+  React.useEffect(() => {  
+    //Process Events, extract Days
+    var eventDaysArray = eventsData.map(evt => {
+      return moment(evt.startTime, 'X').format('ddd')
+    })
+    var uniqueDays = eventDaysArray.filter((evt, idx, arr) => {
+      return arr.indexOf(evt) === idx
+    })
+    setFestivalDays(uniqueDays);
+    dayButtonPressedStatus = uniqueDays.map(() => { return false})
+  }, eventsData);
+
+  const sliderWidth = Dimensions.get('window').width;
 
   const NoEvents = [
     {
@@ -64,7 +84,7 @@ export default function HomeScreen() {
   const pressed = (key, text) => {
 
     switch(text) {
-      case "What's On Now":
+      case buttonList[0].navText: // Whats On Now
         var filterList = eventsData.filter(event => {
           return moment().isBetween(moment(event.startTime, 'X'), moment(event.endtime, 'X'));
         })
@@ -73,7 +93,7 @@ export default function HomeScreen() {
         setEventsModalShow(true);
         break;
 
-      case "What's On Next":
+      case buttonList[1].navText: // Whats On next
         var filterList = eventsData.filter(event => {
           return moment().isBefore(moment(event.startTime, 'X'));
         })
@@ -83,19 +103,32 @@ export default function HomeScreen() {
         setEventsModalShow(true);
         break;
 
-      case "News":
+      case buttonList[2].navText: // News
         setNewsModalShow(true);
         break;
   
+      case buttonList[3].navText: // Gig Schedule
+        setGigScheduleShow(true);
+        break;
+
       default:
         alert("Pressed " + text);
         break;
     }
   }
-
   
   const toggleEventsModal = () => {
     setEventsModalShow(!eventsModalShow);
+  };
+  
+  const toggleGigSchedule = () => {
+    setGigScheduleShow(!gigScheduleShow);
+  };
+  
+  const toggleEventDetailModal = (idx) => {
+    (idx > -1) && setEventDetailIdx(idx)
+    setEventsModalShow(!eventsModalShow);
+    setEventDetailShow(!eventDetailShow);
   };
   
   const toggleNewsModal = () => {
@@ -112,9 +145,26 @@ export default function HomeScreen() {
     />
   })
 
+  const toggleGigScheduleDayButton = (idx) => {
+    var tmpArray = dayButtonPressedStatus.map((day, i) => {
+      return idx == i;
+    })
+    dayButtonPressedStatus = tmpArray;
+    setDayButtonPressed(!dayButtonPressed);
+  }
+
+  const daysPanels = festivalDays.map((day, idx) => {
+    return (
+      <View style={dayButtonPressedStatus[idx] ? styles.dayPanelSelected : styles.dayPanel} key={idx}>
+        <TouchableOpacity onPress={() => toggleGigScheduleDayButton(idx)}>
+          <Text style={dayButtonPressedStatus[idx] ? styles.dayPanelContentSelected : styles.dayPanelContent}>{day}</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  })
+
   
   const renderNewsItem = ({item, index}) => {
-    console.log("Item:", removeImageSizes(item.content.rendered))
     return (
       <WebView
         source={{ html: removeImageSizes(item.content.rendered)}}
@@ -123,16 +173,17 @@ export default function HomeScreen() {
         scalesPageToFit={false}
       />
     )
-}
+  }
 
   return (
     <View style={styles.container}>
-      <Modal 
+      <Modal //Whats On Now/Next
         isVisible={eventsModalShow}
-        animationInTiming={500}
+        animationInTiming={600}
+        animationOutTiming={600}
       >
         <View style={styles.eventList}>
-          <EventsList data={modalEventsList} />
+          <EventsList data={modalEventsList} toggle={toggleEventDetailModal}/>
           <Button 
             buttonStyle={styles.closeButtonBackGround} 
             titleStyle={styles.closeButtonText} 
@@ -141,15 +192,46 @@ export default function HomeScreen() {
           />
         </View>
       </Modal>
-      <Modal 
+      <Modal //Event Details
+        isVisible={eventDetailShow}
+        animationIn={'slideInDown'}
+        animationInTiming={600}
+        animationOut={'slideOutUp'}
+        animationOutTiming={600}
+      >         
+        <Image
+          style={styles.eventDetailImageStyles}
+          containerStyle={{backgroundColor: '#fff'}}
+          resizeMode={'stretch'}
+          source={
+            {uri: modalEventsList[eventDetailIdx] && 
+              removeImageSizes(extractImage(modalEventsList[eventDetailIdx].Thumbnail))}}
+        />
+        <WebView
+          source={{ html: modalEventsList[eventDetailIdx] && removeImageSizes(modalEventsList[eventDetailIdx].Detail)}}
+          contentInset={{top: 10, left: 5, bottom: 10, right: 5}}
+          style={{backgroundColor: '#fff'}}
+          scalesPageToFit={false}
+        />
+        <Button 
+          buttonStyle={styles.closeButtonBackGround} 
+          titleStyle={styles.closeButtonText} 
+          title="Close" 
+          onPress={toggleEventDetailModal}
+        />          
+      </Modal>
+      <Modal //News
         isVisible={newsModalShow}
-        animationType={'slide'}
+        animationInTiming={600}
+        animationOutTiming={600}
       >
         <Carousel
               data={newsData}
               renderItem={renderNewsItem}
-              sliderWidth={330}
-              itemWidth={280}
+              sliderWidth={sliderWidth}
+              itemWidth={sliderWidth-75}
+              activeSlideAlignment={'start'}
+              useScrollView={true}
         />
         <Button 
           buttonStyle={styles.closeButtonBackGround} 
@@ -158,7 +240,25 @@ export default function HomeScreen() {
           onPress={toggleNewsModal}
         />
       </Modal>
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <Modal //Gig Schedule
+        isVisible={gigScheduleShow}
+        transparent={true}
+        animationInTiming={500}
+        animationOutTiming={500}
+        style={styles.gigScheduleContainer}
+      >
+        <View style={styles.gigScheduleDaysPanel} data={dayButtonPressed}>
+            {daysPanels}
+        </View>
+        <Button 
+          containerStyle={styles.closeScheduleButton}
+          buttonStyle={styles.closeGigsButtonBackGround} 
+          titleStyle={styles.closeButtonText} 
+          title="Close" 
+          onPress={toggleGigSchedule}
+        />
+      </Modal>
+      <ScrollView style={styles.container} contentContainerStyle={styles.homePageButtonsContainer}>
         {navButtonArray}
       </ScrollView>
     </View>
@@ -168,16 +268,19 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Colors.backGroundPrimary,
   },
-  contentContainer: {
+  homePageButtonsContainer: {
+    display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
     paddingTop: 10,
   },
   closeButtonBackGround: {
     backgroundColor: Colors.primaryColour,
+    marginTop: 5,
+    borderWidth: 1,
+    borderColor: Colors.secondaryColour
   },
   closeButtonText: {
     color: Colors.secondaryColour,
@@ -185,5 +288,51 @@ const styles = StyleSheet.create({
   eventList: {
     backgroundColor: Colors.backGroundPrimary,
     padding: 20,
+  },
+  eventDetailImageStyles: {
+    width: 200, 
+    height: 150
+  },
+  closeGigsButtonBackGround: {
+    backgroundColor: Colors.primaryColour,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: Colors.secondaryColour,
+  },
+  gigScheduleContainer: {
+    backgroundColor: Colors.backGroundPrimary,
+    display: 'flex',
+  },
+  closeScheduleButton: {
+  },
+  gigScheduleDaysPanel: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+  },
+  dayPanel: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: Colors.secondaryColour,
+    backgroundColor: Colors.primaryColour,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  dayPanelContent: {
+    color: Colors.secondaryColour,
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  dayPanelSelected: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: Colors.primaryColour,
+    backgroundColor: Colors.secondaryColour,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  dayPanelContentSelected: {
+    color: Colors.primaryColour,
+    textAlign: 'center',
+    fontWeight: 'bold'
   }
 });

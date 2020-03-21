@@ -50,14 +50,14 @@ export default function App(props) {
         //Load events
         var response = await fetch(eventsAPI);
         apiData = await response.json();
-        // console.log("Array?:", apiData.body)
+        console.log("Events:", JSON.parse(apiData.body));
         setEventsData(JSON.parse(apiData.body));  
+
 
         //Load News       
         var wp = new wpAPI({ endpoint: 'http://www.dannyboyjazzandblues.com/wp-json' })
         const thisYear = new Date().getFullYear();
-        var news = await wp.posts().categories( 3 ).param( 'after', new Date(thisYear + '-01-01' ))
-        // console.log("News:", news);
+        var news = await wp.posts().categories( 3 ).perPage( 5 ).param( 'after', new Date(thisYear + '-01-01' ))
         setNewsData(news);
       } catch (e) {
         // We might want to provide this error information to an error reporting service
