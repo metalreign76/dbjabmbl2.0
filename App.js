@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Image,   Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { SplashScreen } from 'expo';
+import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from 'expo-asset'
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,20 +24,21 @@ export default function App(props) {
   const [newsData, setNewsData] = useGlobal('NEWS');
   const containerRef = React.useRef();
   const { getInitialState } = useLinking(containerRef);
+  const [ eventsLoaded, setEventsLoaded ] = React.useState(false);
 
   var apiData;
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
     async function loadResourcesAndDataAsync() {
       try {
-        SplashScreen.preventAutoHide();
+        SplashScreen.preventAutoHideAsync();
 
         // Load our initial navigation state
         setInitialNavigationState(await getInitialState());
 
         // Load fonts
         await Font.loadAsync({
-          ...Ionicons.font,
+//          Ionicons: Ionicons.font,
           'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
         });
 
@@ -48,10 +49,13 @@ export default function App(props) {
   
 
         //Load events
-        var response = await fetch(eventsAPI);
-        apiData = await response.json();
-        console.log("Events:", JSON.parse(apiData.body));
-        setEventsData(JSON.parse(apiData.body));  
+        if(!eventsLoaded) {
+          var response = await fetch(eventsAPI);
+          apiData = await response.json();
+          console.log("Events:", JSON.parse(apiData.body));
+          setEventsData(JSON.parse(apiData.body));  
+          setEventsLoaded(true);
+        }
 
 
         //Load News       
@@ -64,12 +68,12 @@ export default function App(props) {
         console.warn(e);
       } finally {
         setLoadingComplete(true);
-        SplashScreen.hide();
+        SplashScreen.hideAsync();
       }
     }
 
     loadResourcesAndDataAsync();
-  }, []);
+  }, [eventsData]);
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return null;
