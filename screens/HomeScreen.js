@@ -3,7 +3,6 @@ import { StyleSheet, View, Dimensions, Text, TouchableOpacity } from 'react-nati
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors'
 import HomeNavButton from '../components/HomeNavButton'
-import EventsList from '../components/EventsList'
 import {useGlobal} from 'reactn';
 import Modal from "react-native-modal";
 import moment from 'moment';
@@ -11,6 +10,8 @@ import { Button, Image } from 'react-native-elements'
 import Carousel from 'react-native-snap-carousel';
 import { WebView } from 'react-native-webview'
 import {removeImageSizes, extractImage} from '../components/Utilities'
+
+import ModalWhatsOnNow from '../components/modals/modalWhatsOnNow';
 
 const buttonList = [
   {
@@ -186,21 +187,12 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Modal //Whats On Now/Next
-        isVisible={eventsModalShow}
-        animationInTiming={600}
-        animationOutTiming={600}
-      >
-        <View style={styles.eventList}>
-          <EventsList data={modalEventsList} toggle={toggleEventDetailModal}/>
-          <Button 
-            buttonStyle={styles.closeButtonBackGround} 
-            titleStyle={styles.closeButtonText} 
-            title="Close" 
-            onPress={toggleEventsModal}
-          />
-        </View>
-      </Modal>
+      <ModalWhatsOnNow 
+        isVisible={eventsModalShow} 
+        modalEventsList={modalEventsList}
+        toggleEventDetailModal={toggleEventDetailModal}
+        toggleEventsModal={toggleEventsModal}
+      />
       <Modal //Event Details
         isVisible={eventDetailShow}
         animationIn={'slideInDown'}
