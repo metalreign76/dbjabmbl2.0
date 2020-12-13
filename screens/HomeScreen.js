@@ -21,17 +21,17 @@ const buttonList = [
   {
     id: 2,
     navText: "What's On Next",
-    icon: "skip-forward",
+    icon: "play-skip-forward",
   },
   {
     id: 3,
     navText: "News",
-    icon: "paper",
+    icon: "newspaper-outline",
   },
   {
     id: 4,
     navText: "Gig Schedule",
-    icon: "musical-notes",
+    icon: "calendar-sharp",
   },
   {
     id: 5,
@@ -43,7 +43,16 @@ const buttonList = [
     navText: "Favourites",
     icon: "heart",
   },
-]
+  {
+    id: 7,
+    navText: "Artists",
+    icon: "musical-notes",
+  },
+  {
+    id: 8,
+    navText: "Venues",
+    icon: "beer-outline",
+  }]
 
 var dayButtonPressedStatus = [];
 

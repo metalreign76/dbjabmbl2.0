@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
       height: 150,
       margin: '1%',
       alignItems: 'center',
-      paddingTop: '10%'
+      paddingTop: '8%'
     },
     navButtontext : {
         color: Colors.secondaryColour,

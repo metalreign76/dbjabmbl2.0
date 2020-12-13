@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   imageHeader: {
     marginTop: 20, 
     width: "100%", 
-    height: 150, 
+    height: 170, 
     backgroundColor: Colors.backGroundPrimary,
   }
 });
