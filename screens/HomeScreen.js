@@ -7,11 +7,11 @@ import {useGlobal} from 'reactn';
 import Modal from "react-native-modal";
 import moment from 'moment';
 import { Button, Image } from 'react-native-elements'
-import Carousel from 'react-native-snap-carousel';
 import { WebView } from 'react-native-webview'
 import {removeImageSizes, extractImage} from '../components/Utilities'
 
 import ModalWhatsOnNow from '../components/modals/modalWhatsOnNow';
+import ModalNews from '../components/modals/modalNews';
 
 const buttonList = [
   {
@@ -31,18 +31,18 @@ const buttonList = [
   },
   {
     id: 4,
+    navText: "Favourites",
+    icon: "heart",
+  },
+  {
+    id: 5,
     navText: "Gig Schedule",
     icon: "calendar-sharp",
   },
   {
-    id: 5,
+    id: 6,
     navText: "Gigs By Venue",
     icon: "restaurant",
-  },
-  {
-    id: 6,
-    navText: "Favourites",
-    icon: "heart",
   },
   {
     id: 7,
@@ -81,8 +81,6 @@ export default function HomeScreen() {
     setFestivalDays(uniqueDays);
     dayButtonPressedStatus = uniqueDays.map(() => { return false})
   }, eventsData);
-
-  const sliderWidth = Dimensions.get('window').width;
 
   const NoEvents = [
     {
@@ -173,17 +171,6 @@ export default function HomeScreen() {
     )
   })
 
-  
-  const renderNewsItem = ({item, index}) => {
-    return (
-      <WebView
-        source={{ html: removeImageSizes(item.content.rendered)}}
-        contentInset={{top: 10, left: 5, bottom: 10, right: 5}}
-        style={{backgroundColor: '#fff'}}
-        scalesPageToFit={false}
-      />
-    )
-  }
 
   return (
     <View style={styles.container}>
@@ -221,26 +208,11 @@ export default function HomeScreen() {
           onPress={toggleEventDetailModal}
         />          
       </Modal>
-      <Modal //News
-        isVisible={newsModalShow}
-        animationInTiming={600}
-        animationOutTiming={600}
-      >
-        <Carousel
-              data={newsData}
-              renderItem={renderNewsItem}
-              sliderWidth={sliderWidth}
-              itemWidth={sliderWidth-75}
-              activeSlideAlignment={'start'}
-              useScrollView={true}
-        />
-        <Button 
-          buttonStyle={styles.closeButtonBackGround} 
-          titleStyle={styles.closeButtonText} 
-          title="Close" 
-          onPress={toggleNewsModal}
-        />
-      </Modal>
+      <ModalNews 
+        isVisible={newsModalShow} 
+        newsData={newsData}
+        toggleNewsModal={toggleNewsModal}
+      />
       <Modal //Gig Schedule
         isVisible={gigScheduleShow}
         transparent={true}
