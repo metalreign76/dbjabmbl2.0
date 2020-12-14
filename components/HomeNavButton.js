@@ -11,13 +11,13 @@ export default function HomeNavButton(props) {
         style={styles.navButtonStyle}
         onPress={() => { props.pressed(props.id, props.text)}}
     >
-            <Text style={styles.navButtontext}>{props.text}</Text>
-            <Ionicons
-                name={Platform.OS === 'ios' ? 'ios-'+ props.icon : 'md-'+ props.icon}
-                size={50}
-                style={{ marginBottom: -3 }}
-                color={Colors.secondaryColour}
-            />
+      <Text style={styles.navButtontext}>{props.text}</Text>
+      <Ionicons
+          name={Platform.OS === 'ios' ? 'ios-'+ props.icon : 'md-'+ props.icon}
+          size={40}
+          style={{ marginBottom: -3 }}
+          color={Colors.secondaryColour}
+      />
     </TouchableOpacity>
   );
 }

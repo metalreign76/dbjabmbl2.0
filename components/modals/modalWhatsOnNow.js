@@ -9,8 +9,7 @@ import Colors from '../../constants/Colors'
 export default function ModalWhatsOnNow(props) {
     const { 
         isVisible, 
-        modalEventsList, 
-        toggleEventDetailModal, 
+        eventsList,
         toggleEventsModal 
      } = props;
 
@@ -21,11 +20,11 @@ export default function ModalWhatsOnNow(props) {
             animationOutTiming={600}
         >
             <View style={styles.eventList}>
-            <EventsList data={modalEventsList} toggle={toggleEventDetailModal}/>
+            <EventsList data={eventsList}/>
             <Button 
-                buttonStyle={styles.closeButtonBackGround} 
-                titleStyle={styles.closeButtonText} 
-                title="Close" 
+                buttonStyle={styles.backButtonBackGround} 
+                titleStyle={styles.backButtonText} 
+                title="Back" 
                 onPress={toggleEventsModal}
             />
             </View>
@@ -38,13 +37,13 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.backGroundPrimary,
         padding: 20,
     },
-    closeButtonBackGround: {
+    backButtonBackGround: {
         backgroundColor: Colors.primaryColour,
         marginTop: 5,
         borderWidth: 1,
         borderColor: Colors.secondaryColour
     },
-    closeButtonText: {
+    backButtonText: {
         color: Colors.secondaryColour,
     },
 });

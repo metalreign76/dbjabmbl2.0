@@ -25,10 +25,6 @@ export default function EventsList(props) {
         titleStyle={styles.eventsListItem}
         subtitle={event.Venue ? event.Venue + "\n" + moment(event.Date).format('dddd') + ", " + event.StartTime + " - " + event.EndTime : ""}
         subtitleStyle={styles.eventsSubtitle}
-        onPress={() => { 
-          if(!event.Venue) return;
-          props.toggle(idx);
-        }}
         bottomDivider
       />
       )

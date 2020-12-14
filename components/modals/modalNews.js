@@ -32,9 +32,9 @@ export default function ModalWhatsOnNow(props) {
               useScrollView={true}
         />
         <Button 
-          buttonStyle={styles.closeButtonBackGround} 
-          titleStyle={styles.closeButtonText} 
-          title="Close" 
+          buttonStyle={styles.backButtonBackGround} 
+          titleStyle={styles.backButtonText} 
+          title="Back" 
           onPress={toggleNewsModal}
         />
       </Modal>
@@ -55,13 +55,14 @@ const renderNewsItem = ({item, index}) => {
 
 
 const styles = StyleSheet.create({
-    closeButtonBackGround: {
+    backButtonBackGround: {
         backgroundColor: Colors.primaryColour,
         marginTop: 5,
         borderWidth: 1,
+        width: sliderWidth-75,
         borderColor: Colors.secondaryColour
     },
-    closeButtonText: {
+    backButtonText: {
         color: Colors.secondaryColour,
     },
 });

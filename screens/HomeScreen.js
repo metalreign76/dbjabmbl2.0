@@ -4,14 +4,11 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors'
 import HomeNavButton from '../components/HomeNavButton'
 import {useGlobal} from 'reactn';
-import Modal from "react-native-modal";
 import moment from 'moment';
-import { Button, Image } from 'react-native-elements'
-import { WebView } from 'react-native-webview'
-import {removeImageSizes, extractImage} from '../components/Utilities'
 
 import ModalWhatsOnNow from '../components/modals/modalWhatsOnNow';
 import ModalNews from '../components/modals/modalNews';
+import ModalGigSchedule from '../components/modals/modalGigSchedule'
 
 const buttonList = [
   {
@@ -42,7 +39,7 @@ const buttonList = [
   {
     id: 6,
     navText: "Gigs By Venue",
-    icon: "restaurant",
+    icon: "beer-outline",
   },
   {
     id: 7,
@@ -52,8 +49,9 @@ const buttonList = [
   {
     id: 8,
     navText: "Venues",
-    icon: "beer-outline",
-  }]
+    icon: "restaurant",
+  }
+]
 
 var dayButtonPressedStatus = [];
 
@@ -61,27 +59,11 @@ var dayButtonPressedStatus = [];
 export default function HomeScreen() {
   const [eventsData, setEventsData] = useGlobal('EVENTS');
   const [newsData, setNewsData] = useGlobal('NEWS');
-  const [modalEventsList, setModalEventsList] = React.useState([]);
-  const [eventsModalShow, setEventsModalShow] = React.useState(false);
-  const [eventDetailShow, setEventDetailShow] = React.useState(false);
-  const [newsModalShow, setNewsModalShow] = React.useState(false);
-  const [eventDetailIdx, setEventDetailIdx] = React.useState(-1);
-  const [gigScheduleShow, setGigScheduleShow] = React.useState(false);
-  const [festivalDays, setFestivalDays] = React.useState([]);
-  const [dayButtonPressed, setDayButtonPressed] = React.useState(false);
-
-  React.useEffect(() => {  
-    //Process Events, extract Days
-    var eventDaysArray = eventsData.map(evt => {
-      return moment(evt.startTime, 'X').format('ddd')
-    })
-    var uniqueDays = eventDaysArray.filter((evt, idx, arr) => {
-      return arr.indexOf(evt) === idx
-    })
-    setFestivalDays(uniqueDays);
-    dayButtonPressedStatus = uniqueDays.map(() => { return false})
-  }, eventsData);
-
+  const [eventsList, setEventsList] = React.useState([]);
+  const [eventsModalIsVisible, setEventsModalIsVisible] = React.useState(false);
+  const [newsModalIsVisible, setNewsModalIsVisible] = React.useState(false);
+  const [gigScheduleModalIsVisible, setGigScheduleModalIsVisible] = React.useState(false);
+  
   const NoEvents = [
     {
       Title: "No events on currently",
@@ -97,8 +79,8 @@ export default function HomeScreen() {
           return moment().isBetween(moment(event.startTime, 'X'), moment(event.endtime, 'X'));
         })
         if(filterList.length == 0) filterList = NoEvents;
-        setModalEventsList(filterList);
-        setEventsModalShow(true);
+        setEventsList(filterList);
+        setEventsModalIsVisible(true);
         break;
 
       case buttonList[1].navText: // Whats On next
@@ -107,16 +89,16 @@ export default function HomeScreen() {
         })
         if(filterList.length == 0) filterList = NoEvents;
         filterList=filterList.filter((item, idx) => {return idx<5})
-        setModalEventsList(filterList);
-        setEventsModalShow(true);
+        setEventsList(filterList);
+        setEventsModalIsVisible(true);
         break;
 
       case buttonList[2].navText: // News
-        setNewsModalShow(true);
+        setNewsModalIsVisible(true);
         break;
-  
-      case buttonList[3].navText: // Gig Schedule
-        setGigScheduleShow(true);
+
+      case buttonList[4].navText: // Gig Schedule
+        setGigScheduleModalIsVisible(true);
         break;
 
       default:
@@ -126,21 +108,15 @@ export default function HomeScreen() {
   }
   
   const toggleEventsModal = () => {
-    setEventsModalShow(!eventsModalShow);
-  };
-  
-  const toggleGigSchedule = () => {
-    setGigScheduleShow(!gigScheduleShow);
-  };
-  
-  const toggleEventDetailModal = (idx) => {
-    (idx > -1) && setEventDetailIdx(idx)
-    setEventsModalShow(!eventsModalShow);
-    setEventDetailShow(!eventDetailShow);
+    setEventsModalIsVisible(!eventsModalIsVisible);
   };
   
   const toggleNewsModal = () => {
-    setNewsModalShow(!newsModalShow);
+    setNewsModalIsVisible(!newsModalIsVisible);
+  };
+  
+  const toggleGigScheduleModal = () => {
+    setGigScheduleModalIsVisible(!gigScheduleModalIsVisible);
   };
 
   const navButtonArray = buttonList.map(button => {
@@ -153,84 +129,23 @@ export default function HomeScreen() {
     />
   })
 
-  const toggleGigScheduleDayButton = (idx) => {
-    var tmpArray = dayButtonPressedStatus.map((day, i) => {
-      return idx == i;
-    })
-    dayButtonPressedStatus = tmpArray;
-    setDayButtonPressed(!dayButtonPressed);
-  }
-
-  const daysPanels = festivalDays.map((day, idx) => {
-    return (
-      <View style={dayButtonPressedStatus[idx] ? styles.dayPanelSelected : styles.dayPanel} key={idx}>
-        <TouchableOpacity onPress={() => toggleGigScheduleDayButton(idx)}>
-          <Text style={dayButtonPressedStatus[idx] ? styles.dayPanelContentSelected : styles.dayPanelContent}>{day}</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  })
-
-
   return (
     <View style={styles.container}>
       <ModalWhatsOnNow 
-        isVisible={eventsModalShow} 
-        modalEventsList={modalEventsList}
-        toggleEventDetailModal={toggleEventDetailModal}
+        isVisible={eventsModalIsVisible} 
+        eventsList={eventsList}
         toggleEventsModal={toggleEventsModal}
       />
-      <Modal //Event Details
-        isVisible={eventDetailShow}
-        animationIn={'slideInDown'}
-        animationInTiming={600}
-        animationOut={'slideOutUp'}
-        animationOutTiming={600}
-      >         
-        <Image
-          style={styles.eventDetailImageStyles}
-          containerStyle={{backgroundColor: '#fff'}}
-          resizeMode={'stretch'}
-          source={
-            {uri: modalEventsList[eventDetailIdx] && 
-              removeImageSizes(extractImage(modalEventsList[eventDetailIdx].Thumbnail))}}
-        />
-        <WebView
-          source={{ html: modalEventsList[eventDetailIdx] && removeImageSizes(modalEventsList[eventDetailIdx].Detail)}}
-          contentInset={{top: 10, left: 5, bottom: 10, right: 5}}
-          style={{backgroundColor: '#fff'}}
-          scalesPageToFit={false}
-        />
-        <Button 
-          buttonStyle={styles.closeButtonBackGround} 
-          titleStyle={styles.closeButtonText} 
-          title="Close" 
-          onPress={toggleEventDetailModal}
-        />          
-      </Modal>
       <ModalNews 
-        isVisible={newsModalShow} 
+        isVisible={newsModalIsVisible} 
         newsData={newsData}
         toggleNewsModal={toggleNewsModal}
       />
-      <Modal //Gig Schedule
-        isVisible={gigScheduleShow}
-        transparent={true}
-        animationInTiming={500}
-        animationOutTiming={500}
-        style={styles.gigScheduleContainer}
-      >
-        <View style={styles.gigScheduleDaysPanel} data={dayButtonPressed}>
-            {daysPanels}
-        </View>
-        <Button 
-          containerStyle={styles.closeScheduleButton}
-          buttonStyle={styles.closeGigsButtonBackGround} 
-          titleStyle={styles.closeButtonText} 
-          title="Close" 
-          onPress={toggleGigSchedule}
-        />
-      </Modal>
+      <ModalGigSchedule 
+        isVisible={gigScheduleModalIsVisible} 
+        allEvents={eventsData}
+        toggleGigScheduleModal={toggleGigScheduleModal}
+      />
       <ScrollView style={styles.container} contentContainerStyle={styles.homePageButtonsContainer}>
         {navButtonArray}
       </ScrollView>
@@ -248,64 +163,5 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
     paddingTop: 10,
-  },
-  closeButtonBackGround: {
-    backgroundColor: Colors.primaryColour,
-    marginTop: 5,
-    borderWidth: 1,
-    borderColor: Colors.secondaryColour
-  },
-  closeButtonText: {
-    color: Colors.secondaryColour,
-  },
-  eventList: {
-    backgroundColor: Colors.backGroundPrimary,
-    padding: 20,
-  },
-  eventDetailImageStyles: {
-    width: 200, 
-    height: 150
-  },
-  closeGigsButtonBackGround: {
-    backgroundColor: Colors.primaryColour,
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: Colors.secondaryColour,
-  },
-  gigScheduleContainer: {
-    backgroundColor: Colors.backGroundPrimary,
-    display: 'flex',
-  },
-  closeScheduleButton: {
-  },
-  gigScheduleDaysPanel: {
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-  },
-  dayPanel: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: Colors.secondaryColour,
-    backgroundColor: Colors.primaryColour,
-    paddingTop: 10,
-    paddingBottom: 10,
-  },
-  dayPanelContent: {
-    color: Colors.secondaryColour,
-    textAlign: 'center',
-    fontWeight: 'bold'
-  },
-  dayPanelSelected: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: Colors.primaryColour,
-    backgroundColor: Colors.secondaryColour,
-    paddingTop: 10,
-    paddingBottom: 10,
-  },
-  dayPanelContentSelected: {
-    color: Colors.primaryColour,
-    textAlign: 'center',
-    fontWeight: 'bold'
   }
 });
