@@ -23,7 +23,7 @@ export default function ModalGigSchedule(props) {
         let tmpGigList = [];
         tmpGigList = allEvents.map((gigDetail) => {
             return {
-
+                color: Colors.secondaryColour,
                 title: gigDetail.Title,
                 start: moment(gigDetail.startTime, 'X').format('YYYY-MM-DD HH:mm:00'),
                 end: moment(gigDetail.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
@@ -52,9 +52,15 @@ export default function ModalGigSchedule(props) {
             <EventCalendar
                 events={gigsList}
                 width={Dimensions.get('window').width-45}
-                style={styles.calendarView}
                 initDate={festivalStart}
                 size={3}
+                styles={
+                        {
+                            event: {
+                                borderColor: Colors.primaryColour
+                            }
+                        }                    
+                }
             />
             <Button 
                 buttonStyle={styles.backButtonBackGround} 
@@ -75,8 +81,5 @@ const styles = StyleSheet.create({
     },
     backButtonText: {
         color: Colors.secondaryColour,
-    },
-    calendarView: {
-        fontFamily: 'space-mono'
     }
 });
