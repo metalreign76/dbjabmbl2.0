@@ -1,9 +1,11 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import EventCalendar from 'react-native-events-calendar'
 import moment from 'moment';
+import { decode } from '../Utilities'
+import ModalGigDetail from './modalGigDetail'
 
 import Colors from '../../constants/Colors'
 
@@ -14,6 +16,13 @@ export default function ModalGigSchedule(props) {
         toggleGigScheduleModal
     } = props;
 
+    [ gigDetailModalIsVisible, setGigDetailModalIsVisible ] = React.useState(false);
+    [ selectedGig, setSelectedGig ] = React.useState({});
+  
+    const toggleGigDetailModal = () => {
+        setGigDetailModalIsVisible(!gigDetailModalIsVisible);
+    };
+    
     const [ gigsList, setGigsList ] = React.useState([]);
     const [ festivalStart, setfestivalStart ] = React.useState(moment().format('YYYY-MM-DD'))
 
@@ -23,11 +32,12 @@ export default function ModalGigSchedule(props) {
         let tmpGigList = [];
         tmpGigList = allEvents.map((gigDetail) => {
             return {
-                color: Colors.secondaryColour,
-                title: gigDetail.Title,
+                title: decode(gigDetail.Title),
                 start: moment(gigDetail.startTime, 'X').format('YYYY-MM-DD HH:mm:00'),
                 end: moment(gigDetail.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
-                summary: gigDetail.Venue
+                summary: gigDetail.Venue,
+                detail: gigDetail.Detail,
+                thumbnail: gigDetail.Thumbnail
             }
         });
         startDate = allEvents.reduce((earliestDate, gig) => {
@@ -39,36 +49,57 @@ export default function ModalGigSchedule(props) {
         }, '2099-01-01');
         setGigsList(tmpGigList);
         setfestivalStart(startDate);
-        console.log('Events', tmpGigList);
-        console.log('First Gig', startDate)
     }, allEvents)
 
     return (
-        <Modal
-            isVisible={isVisible}
-            animationInTiming={300}
-            animationOutTiming={300}
-        >
-            <EventCalendar
-                events={gigsList}
-                width={Dimensions.get('window').width-45}
-                initDate={festivalStart}
-                size={3}
-                styles={
-                        {
-                            event: {
-                                borderColor: Colors.primaryColour
-                            }
-                        }                    
-                }
+        <View>
+            <Modal
+                isVisible={isVisible}
+                animationInTiming={300}
+                animationOutTiming={300}
+            >
+                <EventCalendar
+                    events={gigsList}
+                    width={Dimensions.get('window').width-45}
+                    initDate={festivalStart}
+                    size={3}
+                    eventTapped={(gigDetail) => {
+                        setSelectedGig(gigDetail);
+                        toggleGigScheduleModal();
+                        toggleGigDetailModal();
+                    }}
+                    styles={
+                            {
+                                eventTitle: {
+                                    color : Colors.primaryColour
+                                },
+                                eventSummary: {
+                                    color : Colors.primaryColour
+                                },
+                                eventTimes: {
+                                    color : Colors.primaryColour
+                                },
+                                event: {
+                                    borderColor: Colors.primaryColour,
+                                    backgroundColor: Colors.secondaryColour
+                                }
+                            }                    
+                    }
+                />
+                <Button 
+                    buttonStyle={styles.backButtonBackGround} 
+                    titleStyle={styles.backButtonText} 
+                    title="Back" 
+                    onPress={toggleGigScheduleModal}
+                />
+            </Modal>
+            <ModalGigDetail 
+                isVisible={gigDetailModalIsVisible}
+                gigObject={selectedGig}
+                toggleGigDetailModal={toggleGigDetailModal}
+                togglePreviousModal={toggleGigScheduleModal}
             />
-            <Button 
-                buttonStyle={styles.backButtonBackGround} 
-                titleStyle={styles.backButtonText} 
-                title="Back" 
-                onPress={toggleGigScheduleModal}
-            />
-        </Modal>
+        </View>
     );
 }
 
