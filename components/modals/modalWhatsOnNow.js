@@ -1,34 +1,86 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import EventsList from '../EventsList'
 import { StyleSheet, View } from 'react-native';
+import { ListItem } from 'react-native-elements'
+import moment from 'moment';
 
-import Colors from '../../constants/Colors'
+import ModalGigDetail from './modalGigDetail'
+
+import {decode, extractImage} from '../Utilities'
+import Colors from '../../constants/Colors';
 
 export default function ModalWhatsOnNow(props) {
     const { 
         isVisible, 
         eventsList,
         toggleEventsModal 
-     } = props;
+    } = props;
+
+    const [ gigDetailModalIsVisible, setGigDetailModalIsVisible ] = React.useState(false);
+    const [ selectedGig, setSelectedGig ] = React.useState({});
+  
+    const toggleGigDetailModal = () => {
+        setGigDetailModalIsVisible(!gigDetailModalIsVisible);
+    };
 
     return (
-        <Modal //Whats On Now/Next
-            isVisible={isVisible}
-            animationInTiming={600}
-            animationOutTiming={600}
-        >
-            <View style={styles.eventList}>
-            <EventsList data={eventsList}/>
-            <Button 
-                buttonStyle={styles.backButtonBackGround} 
-                titleStyle={styles.backButtonText} 
-                title="Back" 
-                onPress={toggleEventsModal}
+        <View>
+            <Modal //Whats On Now/Next
+                isVisible={isVisible}
+                animationInTiming={600}
+                animationOutTiming={600}
+            >
+                <View style={styles.eventList}>
+                    {
+                        eventsList.map((event, idx) => {
+                            return (<ListItem
+                                key={idx}
+                                leftAvatar={ event.Venue ? { 
+                                    source: { uri: extractImage(event.Thumbnail) } ,
+                                    size: 'large'
+                                } :
+                                {
+                                    source: event.Thumbnail ,
+                                    size: 'large'
+                                }
+                                }
+                                title={decode(event.Title)}
+                                titleStyle={styles.eventsListItem}
+                                subtitle={event.Venue ? event.Venue + "\n" + moment(event.Date).format('dddd') + ", " + event.StartTime + " - " + event.EndTime : ""}
+                                subtitleStyle={styles.eventsSubtitle}
+                                bottomDivider
+                                onPress={() => {
+                                    setSelectedGig({
+                                        title: decode(event.Title),
+                                        start: moment(event.startTime, 'X').format('YYYY-MM-DD HH:mm:00'),
+                                        end: moment(event.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
+                                        summary: event.Venue,
+                                        detail: event.Detail,
+                                        thumbnail: event.Thumbnail
+                                    });
+                                    toggleEventsModal();
+                                    toggleGigDetailModal();
+                                }}
+                            />
+                            )
+                        })
+                    }
+                    <Button 
+                        buttonStyle={styles.backButtonBackGround} 
+                        titleStyle={styles.backButtonText} 
+                        title="Back" 
+                        onPress={toggleEventsModal}
+                    />
+                </View>
+            </Modal>
+            <ModalGigDetail 
+                isVisible={gigDetailModalIsVisible}
+                gigObject={selectedGig}
+                toggleGigDetailModal={toggleGigDetailModal}
+                togglePreviousModal={toggleEventsModal}
             />
-            </View>
-        </Modal>
+        </View>
     );
 }
 
@@ -46,4 +98,11 @@ const styles = StyleSheet.create({
     backButtonText: {
         color: Colors.secondaryColour,
     },
+    eventsListItem: {
+        color: Colors.primaryColour,
+        fontWeight: 'bold'
+    },
+    eventsSubtitle: {
+        color: Colors.primaryColour,
+    }
 });

@@ -23,23 +23,23 @@ const buttonList = [
   },
   {
     id: 3,
-    navText: "News",
-    icon: "newspaper-outline",
-  },
-  {
-    id: 4,
-    navText: "Favourites",
-    icon: "heart",
-  },
-  {
-    id: 5,
     navText: "Gig Schedule",
     icon: "calendar-sharp",
   },
   {
-    id: 6,
+    id: 4,
     navText: "Gigs By Venue",
     icon: "beer-outline",
+  },
+  {
+    id: 5,
+    navText: "News",
+    icon: "newspaper-outline",
+  },
+  {
+    id: 6,
+    navText: "Favourites",
+    icon: "heart",
   },
   {
     id: 7,
@@ -76,7 +76,8 @@ export default function HomeScreen() {
     switch(text) {
       case buttonList[0].navText: // Whats On Now
         var filterList = eventsData.filter(event => {
-          return moment().isBetween(moment(event.startTime, 'X'), moment(event.endtime, 'X'));
+//          return moment().isBetween(moment(event.startTime, 'X'), moment(event.endtime, 'X'));
+            return true;
         })
         if(filterList.length == 0) filterList = NoEvents;
         setEventsList(filterList);
@@ -93,12 +94,12 @@ export default function HomeScreen() {
         setEventsModalIsVisible(true);
         break;
 
-      case buttonList[2].navText: // News
-        setNewsModalIsVisible(true);
+      case buttonList[2].navText: // Gig Schedule
+        setGigScheduleModalIsVisible(true);
         break;
 
-      case buttonList[4].navText: // Gig Schedule
-        setGigScheduleModalIsVisible(true);
+      case buttonList[4].navText: // News
+        setNewsModalIsVisible(true);
         break;
 
       default:

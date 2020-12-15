@@ -30,8 +30,6 @@ export default function ModalGigDetail(props) {
         }
     }, [gigObject])
 
-    console.log("Selected:", gigObject);
-
     return (
         <Modal
             isVisible={isVisible}
@@ -41,7 +39,9 @@ export default function ModalGigDetail(props) {
             <WebView
                 source={{ html: eventDetails}}
                 contentInset={{top: 10, left: 5, bottom: 10, right: 5}}
-                style={{backgroundColor: Colors.backGroundPrimary}}
+                style={{
+                    backgroundColor: Colors.backGroundPrimary
+                }}
                 scalesPageToFit={false}
             />
             <Button 
