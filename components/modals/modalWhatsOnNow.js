@@ -57,7 +57,8 @@ export default function ModalWhatsOnNow(props) {
                                         end: moment(event.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
                                         summary: event.Venue,
                                         detail: event.Detail,
-                                        thumbnail: event.Thumbnail
+                                        thumbnail: event.Thumbnail,
+                                        location: event.VenueDetails
                                     });
                                     toggleEventsModal();
                                     toggleGigDetailModal();

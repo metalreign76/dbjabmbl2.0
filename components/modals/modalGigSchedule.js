@@ -37,7 +37,8 @@ export default function ModalGigSchedule(props) {
                 end: moment(gigDetail.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
                 summary: gigDetail.Venue,
                 detail: gigDetail.Detail,
-                thumbnail: gigDetail.Thumbnail
+                thumbnail: gigDetail.Thumbnail,
+                location: gigDetail.VenueDetails
             }
         });
         startDate = allEvents.reduce((earliestDate, gig) => {

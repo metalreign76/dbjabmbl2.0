@@ -10,7 +10,7 @@ import Colors from '../../constants/Colors'
 
 const sliderWidth = Dimensions.get('window').width;
 
-export default function ModalWhatsOnNow(props) {
+export default function ModalNews(props) {
     const { 
         isVisible, 
         newsData, 
