@@ -29,8 +29,8 @@ export default function ModalArtistDetail(props) {
     return (
         <Modal
             isVisible={isVisible}
-            animationInTiming={300}
-            animationOutTiming={300}
+            animationInTiming={600}
+            animationOutTiming={600}
         >
             <WebView
                 source={{ html: artistDetails}}

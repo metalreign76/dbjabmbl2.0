@@ -10,6 +10,7 @@ import ModalWhatsOnNow from '../components/modals/modalWhatsOnNow';
 import ModalNews from '../components/modals/modalNews';
 import ModalGigSchedule from '../components/modals/modalGigSchedule';
 import ModalArtists from '../components/modals/modalArtists';
+import ModalVenuesMap from '../components/modals/modalVenuesMap';
 import { decode, extractImage } from '../components/Utilities'
 
 const buttonList = [
@@ -30,18 +31,18 @@ const buttonList = [
   },
   {
     id: 4,
-    navText: "Gigs By Venue",
+    navText: "Gigs by Venue",
     icon: "beer-outline",
   },
   {
     id: 5,
-    navText: "News",
-    icon: "newspaper-outline",
+    navText: "Gigs by Artist",
+    icon: "guitar",
   },
   {
     id: 6,
-    navText: "Favourites",
-    icon: "heart",
+    navText: "News",
+    icon: "newspaper-outline",
   },
   {
     id: 7,
@@ -50,8 +51,8 @@ const buttonList = [
   },
   {
     id: 8,
-    navText: "Venues",
-    icon: "restaurant",
+    navText: "Favourites",
+    icon: "heart",
   }
 ]
 
@@ -66,9 +67,12 @@ export default function HomeScreen() {
   const [newsModalIsVisible, setNewsModalIsVisible] = React.useState(false);
   const [gigScheduleModalIsVisible, setGigScheduleModalIsVisible] = React.useState(false);
   const [artistsModalIsVisible, setArtistsModalIsVisible] = React.useState(false);
+  const [venuesMapModalIsVisible, setVenuesMapModalIsVisible] = React.useState(false);
 
   const [ artistsInfo, setArtistsInfo ] = React.useState({});
   const [ ArtistsDisplayList, setArtistsDisplayList ] = React.useState([]);
+
+  const [ venuesDisplayList, setVenuesDisplayList ] = React.useState([]);
 
   const NoEvents = [
     {
@@ -104,11 +108,31 @@ export default function HomeScreen() {
         setGigScheduleModalIsVisible(true);
         break;
 
-      case buttonList[4].navText: // News
+      case buttonList[3].navText: // Venues Map
+      const uniqueVenuesList = [];
+      const uniqueVenuesDisplayList = [];
+      eventsData.forEach((event) => {
+          if(!uniqueVenuesList.includes(event.Venue)) {
+            uniqueVenuesList.push(event.Venue);
+            uniqueVenuesDisplayList.push({
+              venueName: event.Venue,
+              venueAddr: event.VenueDetails.address,
+              venueLat: parseFloat(event.VenueDetails.latitude),
+              venueLong: parseFloat(event.VenueDetails.longitude),
+            });
+          }
+      })
+      setVenuesDisplayList(uniqueVenuesDisplayList);
+      console.log("Unique Venues:", uniqueVenuesDisplayList);
+      setVenuesMapModalIsVisible(true);
+        break;
+
+      case buttonList[5].navText: // News
         setNewsModalIsVisible(true);
         break;
 
-      case buttonList[6].navText: // Artists
+        case buttonList[4].navText: // Gigs by Artist
+        case buttonList[6].navText: // Artists
         const uniqueArtistsList = [];
         const uniqueArtistsDisplayList = [];
         const uniqueArtistsDetail = {};
@@ -143,7 +167,13 @@ export default function HomeScreen() {
               };
             }
         })
-        uniqueArtistsDisplayList.sort((a,b) => { return a.artistName > b.artistName});
+        if(uniqueArtistsDisplayList.length)
+          uniqueArtistsDisplayList.sort((a,b) => { return a.artistName > b.artistName});
+        else
+          uniqueArtistsDisplayList[{
+            artistName: "No artists have yet been announced",
+            artistInfo: ""
+          }];
         setArtistsDisplayList(uniqueArtistsDisplayList);
         setArtistsInfo(uniqueArtistsDetail);
         console.log("Unique Artists:", uniqueArtistsDisplayList);
@@ -172,6 +202,9 @@ export default function HomeScreen() {
     setArtistsModalIsVisible(!artistsModalIsVisible);
   };
 
+  const toggleVenuesMapModal = () => {
+    setVenuesMapModalIsVisible(!venuesMapModalIsVisible);
+  };
   const navButtonArray = buttonList.map(button => {
     return <HomeNavButton 
       key={button.id} 
@@ -204,6 +237,11 @@ export default function HomeScreen() {
         artistsDisplayList={ArtistsDisplayList}
         artistsInfo={artistsInfo}
         toggleArtistsModal={toggleArtistsModal}
+      />
+      <ModalVenuesMap 
+        isVisible={venuesMapModalIsVisible} 
+        venuesList={venuesDisplayList}
+        toggleVenuesMapModal={toggleVenuesMapModal}
       />
       <ScrollView style={styles.container} contentContainerStyle={styles.homePageButtonsContainer}>
         {navButtonArray}

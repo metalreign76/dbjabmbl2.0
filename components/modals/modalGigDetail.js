@@ -33,8 +33,8 @@ export default function ModalGigDetail(props) {
     return (
         <Modal
             isVisible={isVisible}
-            animationInTiming={300}
-            animationOutTiming={300}
+            animationInTiming={600}
+            animationOutTiming={600}
         >
             <WebView
                 source={{ html: eventDetails}}

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { StyleSheet, Dimensions, View, Image, Text } from 'react-native';
+import { StyleSheet, Dimensions, View, ScrollView } from 'react-native';
 import { ListItem } from 'react-native-elements'
 import { WebView } from 'react-native-webview'
 import moment from 'moment';
@@ -35,7 +35,7 @@ export default function ModalArtists(props) {
         animationInTiming={600}
         animationOutTiming={600}
       >
-        <View style={styles.artistList}>
+        <ScrollView style={styles.artistList}>
             {
               artistsDisplayList.map((artist, idx) => {
                   return (<ListItem
@@ -72,7 +72,7 @@ export default function ModalArtists(props) {
               title="Back" 
               onPress={toggleArtistsModal}
             />
-        </View>
+        </ScrollView>
       </Modal>
       <ModalArtistDetail 
           isVisible={artistDetailModalIsVisible}
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
       backgroundColor: Colors.primaryColour,
       marginTop: 5,
       borderWidth: 1,
-      width: sliderWidth-75,
+      padding: 10,
       borderColor: Colors.secondaryColour
   },
   backButtonText: {
@@ -100,8 +100,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   artistList: {
-    backgroundColor: Colors.backGroundPrimary,
-    padding: 20,
+    padding: 5,
   },
 });
 

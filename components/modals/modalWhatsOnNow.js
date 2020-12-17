@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native';
 import { ListItem } from 'react-native-elements'
 import moment from 'moment';
 
@@ -31,7 +31,7 @@ export default function ModalWhatsOnNow(props) {
                 animationInTiming={600}
                 animationOutTiming={600}
             >
-                <View style={styles.eventList}>
+                <ScrollView style={styles.eventList}>
                     {
                         eventsList.map((event, idx) => {
                             return (<ListItem
@@ -47,10 +47,18 @@ export default function ModalWhatsOnNow(props) {
                                 }
                                 title={decode(event.Title)}
                                 titleStyle={styles.eventsListItem}
-                                subtitle={event.Venue ? event.Venue + "\n" + moment(event.Date).format('dddd') + ", " + event.StartTime + " - " + event.EndTime : ""}
+                                subtitle={event.Venue ? event.Venue 
+                                    + "\n" 
+                                    + moment(event.Date).format('dddd') 
+                                    + ", " 
+                                    + moment(event.startTime, 'X').format('h:mma') 
+                                    + " - " 
+                                    + moment(event.endTime, 'X').format('h:mma') 
+                                    : ""}
                                 subtitleStyle={styles.eventsSubtitle}
                                 bottomDivider
                                 onPress={() => {
+                                    if(!event.Venue) return;
                                     setSelectedGig({
                                         title: decode(event.Title),
                                         start: moment(event.startTime, 'X').format('YYYY-MM-DD HH:mm:00'),
@@ -73,7 +81,7 @@ export default function ModalWhatsOnNow(props) {
                         title="Back" 
                         onPress={toggleEventsModal}
                     />
-                </View>
+                </ScrollView>
             </Modal>
             <ModalGigDetail 
                 isVisible={gigDetailModalIsVisible}
@@ -87,8 +95,7 @@ export default function ModalWhatsOnNow(props) {
 
 const styles = StyleSheet.create({
     eventList: {
-        backgroundColor: Colors.backGroundPrimary,
-        padding: 20,
+        padding: 10,
     },
     backButtonBackGround: {
         backgroundColor: Colors.primaryColour,

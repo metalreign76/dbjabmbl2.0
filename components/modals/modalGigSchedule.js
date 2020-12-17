@@ -56,8 +56,8 @@ export default function ModalGigSchedule(props) {
         <View>
             <Modal
                 isVisible={isVisible}
-                animationInTiming={300}
-                animationOutTiming={300}
+                animationInTiming={600}
+                animationOutTiming={600}
             >
                 <EventCalendar
                     events={gigsList}
