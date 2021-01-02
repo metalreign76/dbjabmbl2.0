@@ -13,7 +13,8 @@ export default function ModalGigSchedule(props) {
     const { 
         isVisible, 
         allEvents,
-        toggleGigScheduleModal
+        toggleGigScheduleModal,
+        togglePrevModal
     } = props;
 
     console.log("********", allEvents);
@@ -27,6 +28,11 @@ export default function ModalGigSchedule(props) {
     const toggleGigDetailModal = () => {
         setGigDetailModalIsVisible(!gigDetailModalIsVisible);
     };
+
+    const toggleBackToPrevDisplay = () => {
+        toggleGigScheduleModal();
+        if(togglePrevModal) togglePrevModal();
+    }
     
     let startDate = moment().format('YYYY-MM-DD');
 
@@ -93,7 +99,7 @@ export default function ModalGigSchedule(props) {
                     buttonStyle={styles.backButtonBackGround} 
                     titleStyle={styles.backButtonText} 
                     title="Back" 
-                    onPress={toggleGigScheduleModal}
+                    onPress={toggleBackToPrevDisplay    }
                 />
             </Modal>
             <ModalGigDetail 

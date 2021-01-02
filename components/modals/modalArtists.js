@@ -96,6 +96,7 @@ export default function ModalArtists(props) {
       isVisible={gigScheduleModalIsVisible} 
       allEvents={selectedArtist.gigs}
       toggleGigScheduleModal={toggleGigScheduleModal}
+      togglePrevModal={toggleArtistsModal}
       />
     </View>
   );
