@@ -11,6 +11,7 @@ import ModalNews from '../components/modals/modalNews';
 import ModalGigSchedule from '../components/modals/modalGigSchedule';
 import ModalArtists from '../components/modals/modalArtists';
 import ModalVenuesMap from '../components/modals/modalVenuesMap';
+import ModalVenues from '../components/modals/modalVenues';
 import { decode, extractImage } from '../components/Utilities'
 
 const buttonList = [
@@ -26,33 +27,33 @@ const buttonList = [
   },
   {
     id: 2,
-    navText: "Gig Schedule",
-    icon: "calendar-sharp",
-  },
-  {
-    id: 3,
     navText: "News",
     icon: "newspaper-outline",
   },
   {
-    id: 4,
-    navText: "Gigs by Artist",
-    icon: "guitar",
+    id: 3,
+    navText: "Gig Schedule",
+    icon: "calendar-sharp",
   },
   {
-    id: 5,
+    id: 4,
     navText: "Artists",
     icon: "musical-notes",
   },
   {
+    id: 5,
+    navText: "Gigs by Artist",
+    icon: "guitar",
+  },
+  {
     id: 6,
-    navText: "Gigs by Venue",
-    icon: "beer-outline",
+    navText: "Venues Map",
+    icon: "map-marker-alt",
   },
   {
     id: 7,
-    navText: "Venues Map",
-    icon: "map-marker-alt",
+    navText: "Gigs by Venue",
+    icon: "beer-outline",
   },
   {
     id: 8,
@@ -71,12 +72,14 @@ export default function HomeScreen() {
   const [gigScheduleModalIsVisible, setGigScheduleModalIsVisible] = React.useState(false);
   const [artistsModalIsVisible, setArtistsModalIsVisible] = React.useState(false);
   const [venuesMapModalIsVisible, setVenuesMapModalIsVisible] = React.useState(false);
+  const [venuesListModalIsVisible, setVenuesListModalIsVisible] = React.useState(false);
 
   const [ artistsInfo, setArtistsInfo ] = React.useState({});
   const [ gigsByArtistFlag, setGigsByArtistFlag ] = React.useState(false);
   const [ ArtistsDisplayList, setArtistsDisplayList ] = React.useState([]);
 
   const [ venuesDisplayList, setVenuesDisplayList ] = React.useState([]);
+  const [ venuesGigLists, setVenuesGigLists ] = React.useState({});
 
   const NoEvents = [
     {
@@ -85,10 +88,58 @@ export default function HomeScreen() {
     }
   ]
 
+  const filterByArtist = (uniqueArtistsList, uniqueArtistsDisplayList, uniqueArtistsDetail) => {
+    eventsData.forEach((event) => {
+      const decodedArtistName = decode(event.Title);
+      const extractedArtistName = 
+        decodedArtistName.includes(":") ? 
+          decodedArtistName.split(':')[1].trim() : decodedArtistName;
+      if(uniqueArtistsList.includes(extractedArtistName)) {
+        uniqueArtistsDetail[extractedArtistName].artistGigs.push(event);
+      } else {
+        uniqueArtistsList.push(extractedArtistName);
+        uniqueArtistsDisplayList.push({
+          artistName: extractedArtistName,
+          artistImage: extractImage(event.Thumbnail),
+          artistInfo: event.Detail
+        });
+        uniqueArtistsDetail[extractedArtistName] = {
+          artistImage: event.Thumbnail,
+          artistInfo: event.Detail,
+          artistGigs: [event]
+        };
+      }
+    })
+    if(uniqueArtistsDisplayList.length)
+      uniqueArtistsDisplayList.sort((a,b) => { return a.artistName > b.artistName});
+    else
+      uniqueArtistsDisplayList[{
+        artistName: "No artists have yet been announced",
+        artistInfo: ""
+      }];
+  }
+
+  const filterByVenue = (uniqueVenuesList, uniqueVenuesDisplayList, uniqueVenuesGigsList) => {
+    eventsData.forEach((event) => {
+      if(uniqueVenuesList.includes(event.Venue)) {
+        uniqueVenuesGigsList[event.Venue].push(event);
+      } else {
+        uniqueVenuesList.push(event.Venue);
+        uniqueVenuesDisplayList.push({
+          venueName: event.Venue,
+          venueAddr: event.VenueDetails.address,
+          venueLat: parseFloat(event.VenueDetails.latitude),
+          venueLong: parseFloat(event.VenueDetails.longitude)
+        });
+        uniqueVenuesGigsList[event.Venue] = [ event ];
+      }
+    })
+  }
+
   const pressed = (key, text) => {
 
     switch(text) {
-      case buttonList[0].navText: // Whats On Now
+      case "What's On Now":
         var filterList = eventsData.filter(event => {
 //          return moment().isBetween(moment(event.startTime, 'X'), moment(event.endtime, 'X'));
             return true;
@@ -98,7 +149,7 @@ export default function HomeScreen() {
         setEventsModalIsVisible(true);
         break;
 
-      case buttonList[1].navText: // Whats On next
+      case "What's On Next":
         var filterList = eventsData.filter(event => {
           return moment().isBefore(moment(event.startTime, 'X'));
         })
@@ -108,79 +159,62 @@ export default function HomeScreen() {
         setEventsModalIsVisible(true);
         break;
 
-      case buttonList[2].navText: // Gig Schedule
+      case "News":
+        if(!newsData.length) {
+          setNewsData([
+            { content: {
+                      rendered: "No News posted for this year......yet!"
+                    }
+              }]);
+        }
+        setNewsModalIsVisible(true);
+        break;
+  
+      case "Gig Schedule":
         setGigScheduleModalIsVisible(true);
         break;
 
-      case buttonList[3].navText: // News
-        newsData.length || setNewsData([
-          { content: {
-                      rendered: "No News posted for this year......yet!"
-                    }
-                  }])
-        setNewsModalIsVisible(true);
-        break;
-      
-      case buttonList[4].navText: // Gigs by Artist
-      case buttonList[5].navText: // Artists
-        if(text === buttonList[4].navText) // Gigs by Artist
-          setGigsByArtistFlag(true)
-        else
+      case "Artists":
           setGigsByArtistFlag(false);
-        const uniqueArtistsList = [];
-        const uniqueArtistsDisplayList = [];
-        const uniqueArtistsDetail = {};
-        eventsData.forEach((event) => {
-            const decodedArtistName = decode(event.Title);
-            const extractedArtistName = 
-              decodedArtistName.includes(":") ? 
-                decodedArtistName.split(':')[1].trim() : decodedArtistName;
-            if(uniqueArtistsList.includes(extractedArtistName)) {
-              uniqueArtistsDetail[extractedArtistName].artistGigs.push(event);
-            } else {
-              uniqueArtistsList.push(extractedArtistName);
-              uniqueArtistsDisplayList.push({
-                artistName: extractedArtistName,
-                artistImage: extractImage(event.Thumbnail),
-                artistInfo: event.Detail
-              });
-              uniqueArtistsDetail[extractedArtistName] = {
-                artistImage: event.Thumbnail,
-                artistInfo: event.Detail,
-                artistGigs: [event]
-              };
-            }
-        })
-        if(uniqueArtistsDisplayList.length)
-          uniqueArtistsDisplayList.sort((a,b) => { return a.artistName > b.artistName});
-        else
-          uniqueArtistsDisplayList[{
-            artistName: "No artists have yet been announced",
-            artistInfo: ""
-          }];
-        setArtistsDisplayList(uniqueArtistsDisplayList);
-        setArtistsInfo(uniqueArtistsDetail);
+          const uniqueArtistsList = [];
+          const uniqueArtistsDisplayList = [];
+          const uniqueArtistsDetail = {};
+          filterByArtist(uniqueArtistsList, uniqueArtistsDisplayList, uniqueArtistsDetail);
+          setArtistsDisplayList(uniqueArtistsDisplayList);
+          setArtistsInfo(uniqueArtistsDetail);
+          setArtistsModalIsVisible(true);
+          break;      
+      
+      case "Gigs by Artist":
+        setGigsByArtistFlag(true)
+        const uniqueArtistsByGigsList = [];
+        const uniqueArtistsByGigsDisplayList = [];
+        const uniqueArtistsByGigsDetail = {};
+        filterByArtist(uniqueArtistsByGigsList, uniqueArtistsByGigsDisplayList, uniqueArtistsByGigsDetail);
+        setArtistsDisplayList(uniqueArtistsByGigsDisplayList);
+        setArtistsInfo(uniqueArtistsByGigsDetail);
         setArtistsModalIsVisible(true);
         break;
 
-        case buttonList[7].navText: // Venues Map
-        const uniqueVenuesList = [];
-        const uniqueVenuesDisplayList = [];
-        eventsData.forEach((event) => {
-            if(!uniqueVenuesList.includes(event.Venue)) {
-              uniqueVenuesList.push(event.Venue);
-              uniqueVenuesDisplayList.push({
-                venueName: event.Venue,
-                venueAddr: event.VenueDetails.address,
-                venueLat: parseFloat(event.VenueDetails.latitude),
-                venueLong: parseFloat(event.VenueDetails.longitude),
-              });
-            }
-        })
-        setVenuesDisplayList(uniqueVenuesDisplayList);
+      case "Venues Map":
+        const uniqueVenuesMapList = [];
+        const uniqueVenuesMapDisplayList = [];    
+        const uniqueVenuesMapGigsList = {};    
+        filterByVenue(uniqueVenuesMapList, uniqueVenuesMapDisplayList, uniqueVenuesMapGigsList)
+        setVenuesDisplayList(uniqueVenuesMapDisplayList);
         setVenuesMapModalIsVisible(true);
         break;
-          
+
+      case "Gigs by Venue":
+        const uniqueVenuesList = [];
+        const uniqueVenuesDisplayList = [];        
+        const uniqueVenuesGigsList = {};    
+        filterByVenue(uniqueVenuesList, uniqueVenuesDisplayList, uniqueVenuesGigsList)
+        setVenuesDisplayList(uniqueVenuesDisplayList);
+        setVenuesGigLists(uniqueVenuesGigsList);
+        setVenuesListModalIsVisible(true);
+        break;
+
       default:
         alert("Pressed " + text);
         break;
@@ -206,6 +240,11 @@ export default function HomeScreen() {
   const toggleVenuesMapModal = () => {
     setVenuesMapModalIsVisible(!venuesMapModalIsVisible);
   };
+
+  const toggleVenuesListModal = () => {
+    setVenuesListModalIsVisible(!venuesListModalIsVisible);
+  };
+  
   const navButtonArray = buttonList.map(button => {
     return <HomeNavButton 
       key={button.id} 
@@ -245,6 +284,12 @@ export default function HomeScreen() {
         isVisible={venuesMapModalIsVisible} 
         venuesList={venuesDisplayList}
         toggleVenuesMapModal={toggleVenuesMapModal}
+      />
+      <ModalVenues 
+        isVisible={venuesListModalIsVisible} 
+        venuesList={venuesDisplayList}
+        venuesGigsLists={venuesGigLists}
+        toggleVenuesListModal={toggleVenuesListModal}
       />
       <ScrollView style={styles.container} contentContainerStyle={styles.homePageButtonsContainer}>
         {navButtonArray}

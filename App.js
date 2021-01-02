@@ -54,7 +54,7 @@ export default function App(props) {
         if(!eventsLoaded) {
           var response = await fetch(eventsAPI);
           apiData = await response.json();
-//          console.log("Events:", JSON.parse(apiData.body));
+    //      console.log("Events:", JSON.parse(apiData.body));
           setEventsData(JSON.parse(apiData.body));  
           setEventsLoaded(true);
         }

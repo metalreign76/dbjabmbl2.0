@@ -17,7 +17,7 @@ export default function ModalGigSchedule(props) {
         togglePrevModal
     } = props;
 
-    console.log("********", allEvents);
+    // console.log("********", allEvents);
 
     const [ gigDetailModalIsVisible, setGigDetailModalIsVisible ] = React.useState(false);
     const [ selectedGig, setSelectedGig ] = React.useState({});
