@@ -1,7 +1,8 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { StyleSheet, Dimensions, View, ScrollView } from 'react-native';
+import { StyleSheet, Dimensions, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { ListItem } from 'react-native-elements'
 import { WebView } from 'react-native-webview'
 import moment from 'moment';
@@ -9,6 +10,7 @@ import moment from 'moment';
 import Colors from '../../constants/Colors'
 import {decode, extractImage} from '../Utilities'
 import ModalArtistDetail from './modalArtistDetail'
+import ModalGigSchedule from './modalGigSchedule';
 
 const sliderWidth = Dimensions.get('window').width;
 
@@ -17,17 +19,23 @@ export default function ModalArtists(props) {
         isVisible, 
         artistsDisplayList,
         artistsInfo, 
-        toggleArtistsModal 
+        toggleArtistsModal,
+        gigsByArtistFlag
      } = props;
 
 
     const [ artistDetailModalIsVisible, setArtistDetailModalIsVisible ] = React.useState(false);
-    const [ selectedArtist, setSelectedArtist ] = React.useState({});
+    const [ gigScheduleModalIsVisible, setGigScheduleModalIsVisible ] = React.useState(false);
+    const [ selectedArtist, setSelectedArtist ] = React.useState({gigs: []});
   
     const toggleArtistDetailModal = () => {
         setArtistDetailModalIsVisible(!artistDetailModalIsVisible);
     };
- 
+
+    const toggleGigScheduleModal = () => {
+      setGigScheduleModalIsVisible(!gigScheduleModalIsVisible);
+    }
+
     return (
       <View>
       <Modal //Artists
@@ -57,10 +65,14 @@ export default function ModalArtists(props) {
                         setSelectedArtist({
                           title: decode(artist.artistName),
                           detail: artist.artistInfo,
-                          thumbnail: artist.artistImage
+                          thumbnail: artist.artistImage,
+                          gigs: artistsInfo[decode(artist.artistName)].artistGigs
                         });
                         toggleArtistsModal();
-                        toggleArtistDetailModal();
+                        if(gigsByArtistFlag)
+                          toggleGigScheduleModal();
+                        else
+                           toggleArtistDetailModal();
                       }}
                     />
                   )
@@ -80,8 +92,13 @@ export default function ModalArtists(props) {
           toggleArtistDetailModal={toggleArtistDetailModal}
           togglePreviousModal={toggleArtistsModal}
       />
-      </View>
-    );
+      <ModalGigSchedule 
+      isVisible={gigScheduleModalIsVisible} 
+      allEvents={selectedArtist.gigs}
+      toggleGigScheduleModal={toggleGigScheduleModal}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

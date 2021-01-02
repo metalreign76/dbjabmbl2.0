@@ -1,22 +1,37 @@
 import * as React from 'react';
-import { Text, Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, Platform, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 
 import Colors from '../constants/Colors';
 
-export default function HomeNavButton(props) {
+const screenHeight = Dimensions.get('window').height;
+const imageHeight = 170; // set in App.js
 
-  switch(props.icon)
+export default function HomeNavButton(props) {
+  const { id, text, icon, pressed, numRows } = props;
+
+  const availableButtonSpace = screenHeight - imageHeight;
+  let calculatedButtonHeight = Math.abs(availableButtonSpace / numRows);
+  calculatedButtonHeight -= Math.abs(calculatedButtonHeight*0.1); // Less 10%
+  const buttonTextMargin = Math.abs(calculatedButtonHeight / 8);
+
+  switch(icon)
   {
     case 'guitar':
-      return (
+    case 'map-marker-alt':
+        return (
         <TouchableOpacity 
-            style={styles.navButtonStyle}
-            onPress={() => { props.pressed(props.id, props.text)}}
+            style={{
+              ...styles.navButtonStyle,
+              height: calculatedButtonHeight,
+              paddingTop: buttonTextMargin,
+              width: (text === 'Favourites') ? '98%' : '48%',
+            }}
+            onPress={() => { pressed(id, text)}}
         >
-          <Text style={styles.navButtontext}>{props.text}</Text>
+          <Text style={styles.navButtontext}>{text}</Text>
           <FontAwesome5
-              name={props.icon}
+              name={icon}
               size={40}
               style={{ marginBottom: -3 }}
               color={Colors.secondaryColour}
@@ -28,12 +43,17 @@ export default function HomeNavButton(props) {
     default: 
       return (
         <TouchableOpacity 
-            style={styles.navButtonStyle}
-            onPress={() => { props.pressed(props.id, props.text)}}
+        style={{
+          ...styles.navButtonStyle,
+          height: (text === 'Favourites') ? Math.abs(calculatedButtonHeight*0.8) : calculatedButtonHeight,
+          paddingTop: (text === 'Favourites') ? Math.abs(buttonTextMargin*0.5) : buttonTextMargin,
+          width: (text === 'Favourites') ? '98%' : '48%',
+        }}
+    onPress={() => { pressed(id, text)}}
         >
-          <Text style={styles.navButtontext}>{props.text}</Text>
+          <Text style={styles.navButtontext}>{text}</Text>
           <Ionicons
-              name={Platform.OS === 'ios' ? 'ios-'+ props.icon : 'md-'+ props.icon}
+              name={Platform.OS === 'ios' ? 'ios-'+ icon : 'md-'+ icon}
               size={40}
               style={{ marginBottom: -3 }}
               color={Colors.secondaryColour}
@@ -48,11 +68,8 @@ const styles = StyleSheet.create({
       borderWidth: 2,
       borderColor: Colors.secondaryColour,
       backgroundColor: Colors.primaryColour,
-      width: '48%',
-      height: 150,
       margin: '1%',
       alignItems: 'center',
-      paddingTop: '8%'
     },
     navButtontext : {
         color: Colors.secondaryColour,

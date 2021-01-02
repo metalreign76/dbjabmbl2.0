@@ -16,16 +16,18 @@ export default function ModalGigSchedule(props) {
         toggleGigScheduleModal
     } = props;
 
+    console.log("********", allEvents);
+
     const [ gigDetailModalIsVisible, setGigDetailModalIsVisible ] = React.useState(false);
     const [ selectedGig, setSelectedGig ] = React.useState({});
   
+    const [ gigsList, setGigsList ] = React.useState([]);
+    const [ festivalStart, setfestivalStart ] = React.useState(moment().format('YYYY-MM-DD'))
+
     const toggleGigDetailModal = () => {
         setGigDetailModalIsVisible(!gigDetailModalIsVisible);
     };
     
-    const [ gigsList, setGigsList ] = React.useState([]);
-    const [ festivalStart, setfestivalStart ] = React.useState(moment().format('YYYY-MM-DD'))
-
     let startDate = moment().format('YYYY-MM-DD');
 
     React.useEffect(() => {
@@ -50,7 +52,7 @@ export default function ModalGigSchedule(props) {
         }, '2099-01-01');
         setGigsList(tmpGigList);
         setfestivalStart(startDate);
-    }, allEvents)
+    }, [allEvents])
 
     return (
         <View>

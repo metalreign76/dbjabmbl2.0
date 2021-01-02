@@ -15,6 +15,7 @@ import useLinking from './navigation/useLinking';
 
 const eventsAPI = 'https://5amdysgq4a.execute-api.eu-west-1.amazonaws.com/default/dbJabEvents';
 
+const homePageImageHeight=170;
 const Stack = createStackNavigator();
 
 export default function App(props) {
@@ -45,6 +46,7 @@ export default function App(props) {
         await Asset.loadAsync([ 
           require('./assets/images/banner2.png'),
           require('./assets/images/DBJAB_logo_100x100.png'),
+          require('./assets/images/musicNoteMarker.png')
         ]);
   
 
@@ -52,7 +54,7 @@ export default function App(props) {
         if(!eventsLoaded) {
           var response = await fetch(eventsAPI);
           apiData = await response.json();
-          console.log("Events:", JSON.parse(apiData.body));
+//          console.log("Events:", JSON.parse(apiData.body));
           setEventsData(JSON.parse(apiData.body));  
           setEventsLoaded(true);
         }
@@ -88,7 +90,7 @@ export default function App(props) {
                 header: ( props =>  
                 <Image 
                   source={require('./assets/images/banner2.png')}
-                  style={styles.imageHeader}
+                  style={{...styles.imageHeader, height: homePageImageHeight}}
                   resizeMode='contain'
                 />),
               }}
@@ -112,7 +114,6 @@ const styles = StyleSheet.create({
   imageHeader: {
     marginTop: 20, 
     width: "100%", 
-    height: 170, 
     backgroundColor: Colors.backGroundPrimary,
   }
 });

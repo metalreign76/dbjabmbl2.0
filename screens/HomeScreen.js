@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Dimensions, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors'
 import HomeNavButton from '../components/HomeNavButton'
@@ -15,39 +15,44 @@ import { decode, extractImage } from '../components/Utilities'
 
 const buttonList = [
   {
-    id: 1,
+    id: 0,
     navText: "What's On Now",
     icon: "play",
   },
   {
-    id: 2,
+    id: 1,
     navText: "What's On Next",
     icon: "play-skip-forward",
   },
   {
-    id: 3,
+    id: 2,
     navText: "Gig Schedule",
     icon: "calendar-sharp",
   },
   {
-    id: 4,
-    navText: "Gigs by Venue",
-    icon: "beer-outline",
-  },
-  {
-    id: 5,
-    navText: "Gigs by Artist",
-    icon: "guitar",
-  },
-  {
-    id: 6,
+    id: 3,
     navText: "News",
     icon: "newspaper-outline",
   },
   {
-    id: 7,
+    id: 4,
+    navText: "Gigs by Artist",
+    icon: "guitar",
+  },
+  {
+    id: 5,
     navText: "Artists",
     icon: "musical-notes",
+  },
+  {
+    id: 6,
+    navText: "Gigs by Venue",
+    icon: "beer-outline",
+  },
+  {
+    id: 7,
+    navText: "Venues Map",
+    icon: "map-marker-alt",
   },
   {
     id: 8,
@@ -55,9 +60,7 @@ const buttonList = [
     icon: "heart",
   }
 ]
-
-var dayButtonPressedStatus = [];
-
+const numButtonRows = Math.ceil(buttonList.length/2);
 
 export default function HomeScreen() {
   const [eventsData, setEventsData] = useGlobal('EVENTS');
@@ -70,6 +73,7 @@ export default function HomeScreen() {
   const [venuesMapModalIsVisible, setVenuesMapModalIsVisible] = React.useState(false);
 
   const [ artistsInfo, setArtistsInfo ] = React.useState({});
+  const [ gigsByArtistFlag, setGigsByArtistFlag ] = React.useState(false);
   const [ ArtistsDisplayList, setArtistsDisplayList ] = React.useState([]);
 
   const [ venuesDisplayList, setVenuesDisplayList ] = React.useState([]);
@@ -80,7 +84,7 @@ export default function HomeScreen() {
       Thumbnail: require('../assets/images/DBJAB_logo_100x100.png')
     }
   ]
-  
+
   const pressed = (key, text) => {
 
     switch(text) {
@@ -108,31 +112,21 @@ export default function HomeScreen() {
         setGigScheduleModalIsVisible(true);
         break;
 
-      case buttonList[3].navText: // Venues Map
-      const uniqueVenuesList = [];
-      const uniqueVenuesDisplayList = [];
-      eventsData.forEach((event) => {
-          if(!uniqueVenuesList.includes(event.Venue)) {
-            uniqueVenuesList.push(event.Venue);
-            uniqueVenuesDisplayList.push({
-              venueName: event.Venue,
-              venueAddr: event.VenueDetails.address,
-              venueLat: parseFloat(event.VenueDetails.latitude),
-              venueLong: parseFloat(event.VenueDetails.longitude),
-            });
-          }
-      })
-      setVenuesDisplayList(uniqueVenuesDisplayList);
-      console.log("Unique Venues:", uniqueVenuesDisplayList);
-      setVenuesMapModalIsVisible(true);
-        break;
-
-      case buttonList[5].navText: // News
+      case buttonList[3].navText: // News
+        newsData.length || setNewsData([
+          { content: {
+                      rendered: "No News posted for this year......yet!"
+                    }
+                  }])
         setNewsModalIsVisible(true);
         break;
-
-        case buttonList[4].navText: // Gigs by Artist
-        case buttonList[6].navText: // Artists
+      
+      case buttonList[4].navText: // Gigs by Artist
+      case buttonList[5].navText: // Artists
+        if(text === buttonList[4].navText) // Gigs by Artist
+          setGigsByArtistFlag(true)
+        else
+          setGigsByArtistFlag(false);
         const uniqueArtistsList = [];
         const uniqueArtistsDisplayList = [];
         const uniqueArtistsDetail = {};
@@ -142,11 +136,7 @@ export default function HomeScreen() {
               decodedArtistName.includes(":") ? 
                 decodedArtistName.split(':')[1].trim() : decodedArtistName;
             if(uniqueArtistsList.includes(extractedArtistName)) {
-              uniqueArtistsDetail[extractedArtistName].artistGigs.push({
-                    start: moment(event.startTime, 'X').format('YYYY-MM-DD HH:mm:00'),
-                    end: moment(event.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
-                    venue: event.Venue,
-              })
+              uniqueArtistsDetail[extractedArtistName].artistGigs.push(event);
             } else {
               uniqueArtistsList.push(extractedArtistName);
               uniqueArtistsDisplayList.push({
@@ -157,13 +147,7 @@ export default function HomeScreen() {
               uniqueArtistsDetail[extractedArtistName] = {
                 artistImage: event.Thumbnail,
                 artistInfo: event.Detail,
-                artistGigs: [
-                  {
-                    start: moment(event.startTime, 'X').format('YYYY-MM-DD HH:mm:00'),
-                    end: moment(event.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
-                    venue: event.Venue,
-                  }
-                ]
+                artistGigs: [event]
               };
             }
         })
@@ -176,10 +160,27 @@ export default function HomeScreen() {
           }];
         setArtistsDisplayList(uniqueArtistsDisplayList);
         setArtistsInfo(uniqueArtistsDetail);
-        console.log("Unique Artists:", uniqueArtistsDisplayList);
         setArtistsModalIsVisible(true);
         break;
 
+        case buttonList[7].navText: // Venues Map
+        const uniqueVenuesList = [];
+        const uniqueVenuesDisplayList = [];
+        eventsData.forEach((event) => {
+            if(!uniqueVenuesList.includes(event.Venue)) {
+              uniqueVenuesList.push(event.Venue);
+              uniqueVenuesDisplayList.push({
+                venueName: event.Venue,
+                venueAddr: event.VenueDetails.address,
+                venueLat: parseFloat(event.VenueDetails.latitude),
+                venueLong: parseFloat(event.VenueDetails.longitude),
+              });
+            }
+        })
+        setVenuesDisplayList(uniqueVenuesDisplayList);
+        setVenuesMapModalIsVisible(true);
+        break;
+          
       default:
         alert("Pressed " + text);
         break;
@@ -212,11 +213,12 @@ export default function HomeScreen() {
       text={button.navText} 
       icon={button.icon}
       pressed={pressed}
+      numRows={numButtonRows}
     />
   })
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <ModalWhatsOnNow 
         isVisible={eventsModalIsVisible} 
         eventsList={eventsList}
@@ -237,6 +239,7 @@ export default function HomeScreen() {
         artistsDisplayList={ArtistsDisplayList}
         artistsInfo={artistsInfo}
         toggleArtistsModal={toggleArtistsModal}
+        gigsByArtistFlag={gigsByArtistFlag}
       />
       <ModalVenuesMap 
         isVisible={venuesMapModalIsVisible} 
@@ -246,7 +249,7 @@ export default function HomeScreen() {
       <ScrollView style={styles.container} contentContainerStyle={styles.homePageButtonsContainer}>
         {navButtonArray}
       </ScrollView>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -254,6 +257,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.backGroundPrimary,
+    height: '80%'
   },
   homePageButtonsContainer: {
     display: 'flex',
