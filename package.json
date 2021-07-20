@@ -32,7 +32,7 @@
     "moment": "^2.24.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "^0.63.4",
+    "react-native": "^0.64.1",
     "react-native-elements": "^1.2.7",
     "react-native-events-calendar": "^1.0.8",
     "react-native-gesture-handler": "~1.8.0",
