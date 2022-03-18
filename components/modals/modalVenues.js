@@ -2,7 +2,7 @@ import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
 import { StyleSheet, Dimensions, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native';
 import { ListItem } from 'react-native-elements'
 
 import Colors from '../../constants/Colors'

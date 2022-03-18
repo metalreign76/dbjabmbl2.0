@@ -2,8 +2,8 @@ import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
 import { StyleSheet, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import { ListItem } from 'react-native-elements'
+import { ScrollView } from 'react-native';
+import { Avatar, ListItem } from 'react-native-elements'
 import moment from 'moment';
 
 import ModalGigDetail from './modalGigDetail'
@@ -20,7 +20,7 @@ export default function ModalWhatsOnNow(props) {
 
     const [ gigDetailModalIsVisible, setGigDetailModalIsVisible ] = React.useState(false);
     const [ selectedGig, setSelectedGig ] = React.useState({});
-  
+
     const toggleGigDetailModal = () => {
         setGigDetailModalIsVisible(!gigDetailModalIsVisible);
     };
@@ -37,26 +37,6 @@ export default function ModalWhatsOnNow(props) {
                         eventsList.map((event, idx) => {
                             return (<ListItem
                                 key={idx}
-                                leftAvatar={ event.Venue ? { 
-                                    source: { uri: extractImage(event.Thumbnail) } ,
-                                    size: 'large'
-                                } :
-                                {
-                                    source: event.Thumbnail ,
-                                    size: 'large'
-                                }
-                                }
-                                title={decode(event.Title)}
-                                titleStyle={styles.eventsListItem}
-                                subtitle={event.Venue ? event.Venue 
-                                    + "\n" 
-                                    + moment(event.Date).format('dddd') 
-                                    + ", " 
-                                    + moment(event.startTime, 'X').format('h:mma') 
-                                    + " - " 
-                                    + moment(event.endTime, 'X').format('h:mma') 
-                                    : ""}
-                                subtitleStyle={styles.eventsSubtitle}
                                 bottomDivider
                                 onPress={() => {
                                     if(!event.Venue) return;
@@ -72,7 +52,25 @@ export default function ModalWhatsOnNow(props) {
                                     toggleEventsModal();
                                     toggleGigDetailModal();
                                 }}
-                            />
+                            >
+                                <Avatar 
+                                    source={ event.Venue ? { 
+                                             uri: extractImage(event.Thumbnail) } :event.Thumbnail
+                                    }
+                                    rounded={true}
+                                />
+                                <ListItem.Title style={styles.eventsListItem}>{decode(event.Title)}</ListItem.Title>
+                                <ListItem.Subtitle style={styles.eventsSubtitle}>
+                                    {event.Venue ? event.Venue 
+                                    + "\n" 
+                                    + moment(event.Date).format('dddd') 
+                                    + ", " 
+                                    + moment(event.startTime, 'X').format('h:mma') 
+                                    + " - " 
+                                    + moment(event.endTime, 'X').format('h:mma') 
+                                    : ""}
+                                </ListItem.Subtitle>
+                            </ListItem>
                             )
                         })
                     }
@@ -96,7 +94,7 @@ export default function ModalWhatsOnNow(props) {
 
 const styles = StyleSheet.create({
     eventList: {
-        padding: 10,
+        padding: 10
     },
     backButtonBackGround: {
         backgroundColor: Colors.primaryColour,
@@ -109,9 +107,11 @@ const styles = StyleSheet.create({
     },
     eventsListItem: {
         color: Colors.primaryColour,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        flex: 2
     },
     eventsSubtitle: {
         color: Colors.primaryColour,
+        flex: 1
     }
 });

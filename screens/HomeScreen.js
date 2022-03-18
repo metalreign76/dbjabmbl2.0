@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native';
 import Colors from '../constants/Colors'
 import HomeNavButton from '../components/HomeNavButton'
 import {useGlobal} from 'reactn';
@@ -54,11 +54,6 @@ const buttonList = [
     id: 7,
     navText: "Gigs by Venue",
     icon: "beer-outline",
-  },
-  {
-    id: 8,
-    navText: "Favourites",
-    icon: "heart",
   }
 ]
 const numButtonRows = Math.ceil(buttonList.length/2);

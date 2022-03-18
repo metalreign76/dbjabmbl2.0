@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Image,   Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Image,   Platform, StatusBar, StyleSheet, View, Text } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from 'expo-asset'
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, HeaderBackground } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen'
 import Colors  from './constants/Colors'
 import {useGlobal} from 'reactn';
@@ -16,15 +16,13 @@ import useLinking from './navigation/useLinking';
 const eventsAPI = 'https://5amdysgq4a.execute-api.eu-west-1.amazonaws.com/default/dbJabEvents';
 
 const homePageImageHeight=170;
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState();
   const [eventsData, setEventsData] = useGlobal('EVENTS');
   const [newsData, setNewsData] = useGlobal('NEWS');
-  const containerRef = React.useRef();
-  const { getInitialState } = useLinking(containerRef);
   const [ eventsLoaded, setEventsLoaded ] = React.useState(false);
 
   var apiData;
@@ -35,7 +33,7 @@ export default function App(props) {
         SplashScreen.preventAutoHideAsync();
 
         // Load our initial navigation state
-        setInitialNavigationState(await getInitialState());
+        setInitialNavigationState(useLinking());
 
         // Load fonts
         await Font.loadAsync({
@@ -54,7 +52,6 @@ export default function App(props) {
         if(!eventsLoaded) {
           var response = await fetch(eventsAPI);
           apiData = await response.json();
-    //      console.log("Events:", JSON.parse(apiData.body));
           setEventsData(JSON.parse(apiData.body));  
           setEventsLoaded(true);
         }
@@ -84,7 +81,7 @@ export default function App(props) {
     return (
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
+        <NavigationContainer linking={initialNavigationState} fallback={<Text>Loading...</Text>}>
           <Stack.Navigator
               screenOptions={{
                 header: ( props =>  
