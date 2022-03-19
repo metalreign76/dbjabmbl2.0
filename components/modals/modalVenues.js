@@ -3,7 +3,7 @@ import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
 import { StyleSheet, Dimensions, View } from 'react-native';
 import { ScrollView } from 'react-native';
-import { ListItem } from 'react-native-elements'
+import { Avatar, ListItem } from 'react-native-elements'
 
 import Colors from '../../constants/Colors'
 import {decode, extractImage} from '../Utilities'
@@ -38,14 +38,6 @@ export default function ModalVenues(props) {
               venuesList.map((venue, idx) => {
                   return (<ListItem
                       key={idx}
-                      leftAvatar={{
-                            source: require('../../assets/images/DBJAB_logo_100x100.png') ,
-                            size: 'large'
-                      }}
-                      title={decode(venue.venueName)}
-                      subtitle={venue.venueAddr}
-                      titleStyle={styles.venuesListItem}
-                      subtitleStyle={styles.venuesListSubItem}
                       topDivider={ idx == 0 ? false : true}
                       bottomDivider
                       onPress={() => {
@@ -55,7 +47,14 @@ export default function ModalVenues(props) {
                         toggleVenuesListModal();
                         toggleGigScheduleModal();
                       }}
-                    />
+                    >
+                        <Avatar 
+                            source={ require('../../assets/images/DBJAB_logo_100x100.png')}
+                            rounded={true}
+                        />
+                        <ListItem.Title style={styles.venuesListItem}>{decode(venue.venueName)}</ListItem.Title>
+                        <ListItem.Subtitle style={styles.venuesListSubItem}>{venue.venueAddr}</ListItem.Subtitle>
+                    </ListItem>
                   )
               })
             }
@@ -90,10 +89,12 @@ const styles = StyleSheet.create({
   },
   venuesListItem: {
     color: Colors.primaryColour,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    flex: 1
   },
   venuesListSubItem: {
     color: Colors.primaryColour,
+    flex: 1
   },
   venuesList: {
     padding: 5,
