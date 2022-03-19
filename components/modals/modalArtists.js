@@ -3,7 +3,7 @@ import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
 import { StyleSheet, Dimensions, View } from 'react-native';
 import { ScrollView } from 'react-native';
-import { ListItem } from 'react-native-elements'
+import { Avatar, ListItem } from 'react-native-elements'
 import { WebView } from 'react-native-webview'
 import moment from 'moment';
 
@@ -48,17 +48,6 @@ export default function ModalArtists(props) {
               artistsDisplayList.map((artist, idx) => {
                   return (<ListItem
                       key={idx}
-                      leftAvatar={ artist.artistImage.length ? { 
-                            source: { uri: extractImage(artist.artistImage) } ,
-                            size: 'large'
-                        } :
-                        {
-                            source: require('../../assets/images/DBJAB_logo_100x100.png') ,
-                            size: 'large'
-                        }
-                      }
-                      title={decode(artist.artistName)}
-                      titleStyle={styles.artistsListItem}
                       topDivider={ idx == 0 ? false : true}
                       bottomDivider
                       onPress={() => {
@@ -74,7 +63,16 @@ export default function ModalArtists(props) {
                         else
                            toggleArtistDetailModal();
                       }}
-                    />
+                    >
+                        <Avatar 
+                            source={ artist.artistImage.length ? { 
+                                      uri: extractImage(artist.artistImage) } :
+                                      require('../../assets/images/DBJAB_logo_100x100.png')
+                            }
+                            rounded={true}
+                        />
+                        <ListItem.Title style={styles.artistsListItem}>{decode(artist.artistName)}</ListItem.Title>
+                    </ListItem>
                   )
               })
             }
