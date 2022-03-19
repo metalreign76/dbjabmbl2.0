@@ -39,6 +39,7 @@ export default function App(props) {
         await Font.loadAsync({
 //          Ionicons: Ionicons.font,
           'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+          'Helvetica Neue': require('./assets/fonts/HelveticaNeueBlack.otf'),
         });
 
         await Asset.loadAsync([ 
