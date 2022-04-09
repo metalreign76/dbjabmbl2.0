@@ -28,7 +28,7 @@
     "expo-font": "~10.0.4",
     "expo-linking": "~3.0.0",
     "expo-splash-screen": "~0.14.1",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "react": "^17.0.1",
     "react-native": "^0.64.3",
     "react-native-elements": "^3.4.2",
