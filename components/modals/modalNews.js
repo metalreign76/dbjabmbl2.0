@@ -2,7 +2,8 @@ import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
 import { StyleSheet, Dimensions } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-reanimated-carousel';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { WebView } from 'react-native-webview'
 import {removeImageSizes, extractImage} from '../Utilities'
 
@@ -18,25 +19,30 @@ export default function ModalNews(props) {
      } = props;
 
     return (
-        <Modal //News
-        isVisible={isVisible}
-        animationInTiming={600}
-        animationOutTiming={600}
-      >
-        <Carousel
+      <Modal //News
+          isVisible={isVisible}
+          animationInTiming={600}
+          animationOutTiming={600}
+        >
+      <GestureHandlerRootView>
+          <Carousel
+              loop={false}
+              mode={"parallax"}
+              width={sliderWidth-20}
               data={newsData}
+              scrollAnimationDuration={1000}
               renderItem={renderNewsItem}
-              sliderWidth={sliderWidth}
-              itemWidth={sliderWidth-75}
-              activeSlideAlignment={'start'}
-              useScrollView={true}
-        />
-        <Button 
-          buttonStyle={styles.backButtonBackGround} 
-          titleStyle={styles.backButtonText} 
-          title="Back" 
-          onPress={toggleNewsModal}
-        />
+              panGestureHandlerProps={{
+                activeOffsetX: [-50, 50],
+              }}
+          />
+      </GestureHandlerRootView>
+      <Button 
+        buttonStyle={styles.backButtonBackGround} 
+        titleStyle={styles.backButtonText} 
+        title="Back" 
+        onPress={toggleNewsModal}
+      />
       </Modal>
     );
 }

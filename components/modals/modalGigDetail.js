@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { View, StyleSheet, Dimensions, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import moment from 'moment';
 import { WebView } from 'react-native-webview'
 import Colors from '../../constants/Colors'

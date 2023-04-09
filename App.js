@@ -3,7 +3,6 @@ import { Image,   Platform, StatusBar, StyleSheet, View, Text } from 'react-nati
 import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from 'expo-asset'
 import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen'
@@ -37,7 +36,6 @@ export default function App(props) {
 
         // Load fonts
         await Font.loadAsync({
-//          Ionicons: Ionicons.font,
           'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
           'Helvetica Neue': require('./assets/fonts/HelveticaNeueBlack.otf'),
         });
@@ -62,6 +60,7 @@ export default function App(props) {
         var wp = new wpAPI({ endpoint: 'http://www.dannyboyjazzandblues.com/wp-json' })
         const thisYear = new Date().getFullYear();
         var news = await wp.posts().categories( 3 ).perPage( 5 ).param( 'after', new Date(thisYear + '-01-01' ))
+        console.log("NEWS:", news)
         setNewsData(news);
       } catch (e) {
         // We might want to provide this error information to an error reporting service
