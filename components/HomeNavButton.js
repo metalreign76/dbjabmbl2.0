@@ -43,13 +43,13 @@ export default function HomeNavButton(props) {
     default: 
       return (
         <TouchableOpacity 
-        style={{
-          ...styles.navButtonStyle,
-          height: (text === 'Favourites') ? Math.abs(calculatedButtonHeight*0.8) : calculatedButtonHeight,
-          paddingTop: (text === 'Favourites') ? Math.abs(buttonTextMargin*0.5) : buttonTextMargin,
-          width: (text === 'Favourites') ? '98%' : '48%',
-        }}
-    onPress={() => { pressed(id, text)}}
+          style={{
+            ...styles.navButtonStyle,
+            height: (text === 'Favourites') ? Math.abs(calculatedButtonHeight*0.8) : calculatedButtonHeight,
+            paddingTop: (text === 'Favourites') ? Math.abs(buttonTextMargin*0.5) : buttonTextMargin,
+            width: (text === 'Favourites') ? '98%' : '48%',
+          }}
+          onPress={() => { pressed(id, text)}}
         >
           <Text style={styles.navButtontext}>{text}</Text>
           <Ionicons
@@ -65,11 +65,11 @@ export default function HomeNavButton(props) {
 
 const styles = StyleSheet.create({
     navButtonStyle: {
+      margin: '1%',
+      alignItems: 'center',
       borderWidth: 2,
       borderColor: Colors.secondaryColour,
       backgroundColor: Colors.primaryColour,
-      margin: '1%',
-      alignItems: 'center',
     },
     navButtontext : {
         color: Colors.secondaryColour,

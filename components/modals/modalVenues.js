@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useGlobal} from 'reactn';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
 import { StyleSheet, Dimensions, View } from 'react-native';
@@ -6,7 +7,7 @@ import { ScrollView } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements'
 
 import Colors from '../../constants/Colors'
-import {decode, extractImage} from '../Utilities'
+import {decode, findEarliestGigDate} from '../Utilities'
 import ModalGigSchedule from './modalGigSchedule';
 
 const sliderWidth = Dimensions.get('window').width;
@@ -42,7 +43,7 @@ export default function ModalVenues(props) {
                       bottomDivider
                       onPress={() => {
                         setSelectedVenue({
-                          gigs: venuesGigsLists[venue.venueName]
+                          gigs: venuesGigsLists[decode(venue.venueName)]
                         });
                         toggleVenuesListModal();
                         toggleGigScheduleModal();

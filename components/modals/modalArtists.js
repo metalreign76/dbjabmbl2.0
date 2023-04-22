@@ -1,14 +1,13 @@
 import * as React from 'react';
+import {useGlobal} from 'reactn';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
 import { StyleSheet, Dimensions, View } from 'react-native';
 import { ScrollView } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements'
-import { WebView } from 'react-native-webview'
-import moment from 'moment';
 
 import Colors from '../../constants/Colors'
-import {decode, extractImage} from '../Utilities'
+import {decode, extractImage, findEarliestGigDate} from '../Utilities'
 import ModalArtistDetail from './modalArtistDetail'
 import ModalGigSchedule from './modalGigSchedule';
 
@@ -56,12 +55,12 @@ export default function ModalArtists(props) {
                           detail: artist.artistInfo,
                           thumbnail: artist.artistImage,
                           gigs: artistsInfo[decode(artist.artistName)].artistGigs
-                        });
+                        });       
                         toggleArtistsModal();
                         if(gigsByArtistFlag)
                           toggleGigScheduleModal();
                         else
-                           toggleArtistDetailModal();
+                          toggleArtistDetailModal();
                       }}
                     >
                         <Avatar 
@@ -91,10 +90,10 @@ export default function ModalArtists(props) {
           togglePreviousModal={toggleArtistsModal}
       />
       <ModalGigSchedule 
-      isVisible={gigScheduleModalIsVisible} 
-      allEvents={selectedArtist.gigs}
-      toggleGigScheduleModal={toggleGigScheduleModal}
-      togglePrevModal={toggleArtistsModal}
+        isVisible={gigScheduleModalIsVisible} 
+        allEvents={selectedArtist.gigs}
+        toggleGigScheduleModal={toggleGigScheduleModal}
+        togglePrevModal={toggleArtistsModal}
       />
     </View>
   );

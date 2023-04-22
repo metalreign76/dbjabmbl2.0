@@ -50,7 +50,7 @@ export default function ModalGigDetail(props) {
                 title="Back" 
                 onPress={() => {
                     toggleGigDetailModal();
-                    togglePreviousModal();
+                    if(togglePreviousModal) togglePreviousModal();
                 }}
             />
         </Modal>

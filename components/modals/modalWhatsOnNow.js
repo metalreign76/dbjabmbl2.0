@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements'
 import moment from 'moment';
+import defaultLogo from '../../assets/images/DBJAB_logo_100x100.png';
 
 import ModalGigDetail from './modalGigDetail'
 
@@ -45,7 +46,7 @@ export default function ModalWhatsOnNow(props) {
                                         start: moment(event.startTime, 'X').format('YYYY-MM-DD HH:mm:00'),
                                         end: moment(event.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
                                         summary: event.Venue,
-                                        detail: event.Detail,
+                                        detail: event.Detail ,
                                         thumbnail: event.Thumbnail,
                                         location: event.VenueDetails
                                     });
@@ -54,14 +55,14 @@ export default function ModalWhatsOnNow(props) {
                                 }}
                             >
                                 <Avatar 
-                                    source={ event.Venue ? { 
-                                             uri: extractImage(event.Thumbnail) } :event.Thumbnail
+                                    source={ event.Thumbnail ? { 
+                                             uri: extractImage(event.Thumbnail) } : defaultLogo
                                     }
                                     rounded={true}
                                 />
                                 <ListItem.Title style={styles.eventsListItem}>{decode(event.Title)}</ListItem.Title>
                                 <ListItem.Subtitle style={styles.eventsSubtitle}>
-                                    {event.Venue ? event.Venue 
+                                    {event.Venue ? decode(event.Venue) 
                                     + "\n" 
                                     + moment(event.Date).format('dddd') 
                                     + ", " 

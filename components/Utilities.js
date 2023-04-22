@@ -1,8 +1,12 @@
+import moment from 'moment';
+
 export function decode(stringToDecode) {
 
     return stringToDecode
         .replace('&#038;', '&')
         .replace('&amp;', '&')
+        .replace('&#8216;', '"')
+        .replace('&#8217;', '"')
 }
 
 export function extractImage(postContent) {
@@ -23,3 +27,13 @@ export function removeImageSizes(fullPost) {
     return removeFigures2;
   }
   
+  export function findEarliestGigDate(gigsArray) {
+    let earliestDate = '2099-01-01';
+    let maybeEarlier = earliestDate;
+    gigsArray.forEach((gig) => {
+        maybeEarlier = moment(gig.startTime, 'X').format('YYYY-MM-DD')
+         if(maybeEarlier < earliestDate)
+         earliestDate = maybeEarlier; 
+    })
+    return earliestDate;
+  }

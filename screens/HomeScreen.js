@@ -12,7 +12,7 @@ import ModalGigSchedule from '../components/modals/modalGigSchedule';
 import ModalArtists from '../components/modals/modalArtists';
 import ModalVenuesMap from '../components/modals/modalVenuesMap';
 import ModalVenues from '../components/modals/modalVenues';
-import { decode, extractImage } from '../components/Utilities'
+import { decode, extractImage, findEarliestGigDate } from '../components/Utilities'
 
 const buttonList = [
   {
@@ -59,8 +59,9 @@ const buttonList = [
 const numButtonRows = Math.ceil(buttonList.length/2);
 
 export default function HomeScreen() {
-  const [eventsData, setEventsData] = useGlobal('EVENTS');
+  const [eventsData] = useGlobal('EVENTS');
   const [newsData, setNewsData] = useGlobal('NEWS');
+  const [festivalStartDate, setFestivalStartDate] = useGlobal('FESTIVALSTART')
   const [eventsList, setEventsList] = React.useState([]);
   const [eventsModalIsVisible, setEventsModalIsVisible] = React.useState(false);
   const [newsModalIsVisible, setNewsModalIsVisible] = React.useState(false);
@@ -78,10 +79,15 @@ export default function HomeScreen() {
 
   const NoEvents = [
     {
-      Title: "No events available",
-      Thumbnail: require('../assets/images/DBJAB_logo_100x100.png')
+      Title: "No events currently available",
+      Venue: null
     }
   ]
+  React.useEffect(() => {
+    setFestivalStartDate(findEarliestGigDate(eventsData));
+}, [eventsData])
+
+  //console.log("All Events:", eventsData);
 
   const filterByArtist = (uniqueArtistsList, uniqueArtistsDisplayList, uniqueArtistsDetail) => {
     eventsData.forEach((event) => {
@@ -136,8 +142,7 @@ export default function HomeScreen() {
     switch(text) {
       case "What's On Now":
         var filterList = eventsData.filter(event => {
-//          return moment().isBetween(moment(event.startTime, 'X'), moment(event.endtime, 'X'));
-            return true;
+          return moment().isBetween(moment(event.startTime, 'X'), moment(event.endTime, 'X'));
         })
         if(filterList.length == 0) filterList = NoEvents;
         setEventsList(filterList);

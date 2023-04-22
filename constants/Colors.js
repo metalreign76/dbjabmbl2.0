@@ -13,4 +13,6 @@ export default {
   warningText: '#666804',
   noticeBackground: primaryColour,
   noticeText: '#fff',
+  calendarColours: ['#ECC337', '#1D6292'],
+  calendarTextColours: {'#ECC337': 'navy', '#1D6292': 'white' },
 };

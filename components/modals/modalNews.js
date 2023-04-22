@@ -10,6 +10,7 @@ import {removeImageSizes, extractImage} from '../Utilities'
 import Colors from '../../constants/Colors'
 
 const sliderWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default function ModalNews(props) {
     const { 
@@ -26,9 +27,14 @@ export default function ModalNews(props) {
         >
       <GestureHandlerRootView>
           <Carousel
+              mode="parallax"
+              modeConfig={{
+                parallaxScrollingScale: 0.9,
+                parallaxScrollingOffset: 50,
+              }}
               loop={false}
-              mode={"parallax"}
-              width={sliderWidth-20}
+              width={sliderWidth-40}
+              height={windowHeight-50}
               data={newsData}
               scrollAnimationDuration={1000}
               renderItem={renderNewsItem}
@@ -63,10 +69,11 @@ const renderNewsItem = ({item, index}) => {
 const styles = StyleSheet.create({
     backButtonBackGround: {
         backgroundColor: Colors.primaryColour,
-        marginTop: 5,
+        marginLeft: 20,
         borderWidth: 1,
         width: sliderWidth-75,
         borderColor: Colors.secondaryColour
+        
     },
     backButtonText: {
         color: Colors.secondaryColour,

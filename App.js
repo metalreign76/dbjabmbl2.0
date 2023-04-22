@@ -59,8 +59,7 @@ export default function App(props) {
         //Load News       
         var wp = new wpAPI({ endpoint: 'http://www.dannyboyjazzandblues.com/wp-json' })
         const thisYear = new Date().getFullYear();
-        var news = await wp.posts().categories( 3 ).perPage( 5 ).param( 'after', new Date(thisYear + '-01-01' ))
-        console.log("NEWS:", news)
+        var news = await wp.posts().categories( 3 ).perPage( 5 ).param( 'after', new Date(thisYear + '-03-01' ))
         setNewsData(news);
       } catch (e) {
         // We might want to provide this error information to an error reporting service
