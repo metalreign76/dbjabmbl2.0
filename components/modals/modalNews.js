@@ -1,15 +1,16 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
-import { Button } from 'react-native-elements'
-import { StyleSheet, Dimensions } from 'react-native';
-import Carousel from 'react-native-reanimated-carousel';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { WebView } from 'react-native-webview'
+import Accordion from 'react-native-collapsible/Accordion';
+import { Button, Avatar } from 'react-native-elements'
+import { StyleSheet, Dimensions, View, Text, TouchableOpacity } from 'react-native';
 import {removeImageSizes, extractImage} from '../Utilities'
+import defaultLogo from '../../assets/images/DBJAB_logo_100x100.png';
 
 import Colors from '../../constants/Colors'
+import RenderHtml from 'react-native-render-html';
+import { ScrollView } from 'react-native-gesture-handler';
 
-const sliderWidth = Dimensions.get('window').width;
+const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function ModalNews(props) {
@@ -19,63 +20,106 @@ export default function ModalNews(props) {
         toggleNewsModal 
      } = props;
 
+    const [activeSection, setActiveSection] = React.useState([]);
+
+     const AccordionSections = newsData.map((newsItem) => {
+      return {
+        title: newsItem.title.rendered,
+        content: newsItem.content.rendered
+      }
+    })
+
+    _renderHeader = (section) => {
+      return (
+        <View style={styles.sectionTitle}>
+          <Avatar 
+              source={ defaultLogo }
+              rounded={true}
+          />
+          <Text style={styles.headerText}>{section.title}</Text>
+        </View>
+      );
+    };
+  
+    _renderContent = (section) => {
+      return (
+          <RenderHtml
+            contentWidth={windowWidth-75}
+            source={{html: removeImageSizes(section.content)}}
+            baseStyle={styles.overallContainer}
+          />
+      );
+    };
+
     return (
-      <Modal //News
+      <Modal //News 
           isVisible={isVisible}
           animationInTiming={600}
           animationOutTiming={600}
-        >
-      <GestureHandlerRootView>
-          <Carousel
-              mode="parallax"
-              modeConfig={{
-                parallaxScrollingScale: 0.9,
-                parallaxScrollingOffset: 50,
-              }}
-              loop={false}
-              width={sliderWidth-40}
-              height={windowHeight-50}
-              data={newsData}
-              scrollAnimationDuration={1000}
-              renderItem={renderNewsItem}
-              panGestureHandlerProps={{
-                activeOffsetX: [-50, 50],
-              }}
-          />
-      </GestureHandlerRootView>
-      <Button 
-        buttonStyle={styles.backButtonBackGround} 
-        titleStyle={styles.backButtonText} 
-        title="Back" 
-        onPress={toggleNewsModal}
-      />
+      >
+        <ScrollView contentContainerStyle={styles.scrollViewStyle}>
+        <Accordion
+          sections={AccordionSections}
+          activeSections={activeSection}
+          touchableComponent={TouchableOpacity}
+          renderHeader={this._renderHeader}
+          renderContent={this._renderContent}
+          onChange={setActiveSection}
+          containerStyle={styles.accordionBackdrop}
+          sectionContainerStyle={styles.sectionContainerStyle}
+          duration={750}
+        />
+        </ScrollView>
+        <Button 
+          buttonStyle={styles.backButtonBackGround} 
+          titleStyle={styles.backButtonText} 
+          title="Back" 
+          onPress={toggleNewsModal}
+        />
       </Modal>
     );
 }
 
-  
-const renderNewsItem = ({item, index}) => {
-    return (
-      <WebView
-        source={{ html: removeImageSizes(item.content.rendered)}}
-        contentInset={{top: 10, left: 5, bottom: 10, right: 5}}
-        style={{backgroundColor: '#fff'}}
-        scalesPageToFit={false}
-      />
-    )
-  }
-
-
 const styles = StyleSheet.create({
     backButtonBackGround: {
         backgroundColor: Colors.primaryColour,
-        marginLeft: 20,
+        alignSelf: 'center',
         borderWidth: 1,
-        width: sliderWidth-75,
-        borderColor: Colors.secondaryColour
+        width: windowWidth-75,
+        borderColor: Colors.secondaryColour,
+        marginTop: 5
         
     },
     backButtonText: {
         color: Colors.secondaryColour,
     },
+    accordionBackdrop: {
+      backgroundColor: Colors.secondaryColour,
+      width: windowWidth-75,
+      alignSelf: 'center',
+    },
+    headerText: {
+      color: Colors.primaryColour,
+      fontWeight: 'bold' ,
+      marginLeft: 10,
+      alignSelf: 'center'
+    },
+    sectionTitle: {
+      marginBottom: 15,
+      marginTop: 15,
+      marginLeft: 5,
+      flexDirection: 'row',
+    },
+    sectionContainerStyle: {
+      borderColor: Colors.primaryColour,
+      borderWidth: 1,
+    },
+    overallContainer: {
+      backgroundColor: '#fff',
+      borderWidth: 1,
+      borderColor: Colors.primaryColour
+    },
+    scrollViewStyle: {
+      alignContent: 'flex-end'
+    }
 });

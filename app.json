@@ -13,7 +13,7 @@
     "icon": "./assets/images/DBJAB_logo_100x100.png",
     "scheme": "myapp",
     "splash": {
-      "image": "./assets/images/DBJAB_logo_500x500.png",
+      "image": "./assets/images/2023_app_splash_white.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

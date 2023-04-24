@@ -42,6 +42,7 @@ export default function App(props) {
 
         await Asset.loadAsync([ 
           require('./assets/images/banner2.png'),
+          require('./assets/images/2023_app_splash_white.png'),
           require('./assets/images/DBJAB_logo_100x100.png'),
           require('./assets/images/musicNoteMarker.png')
         ]);
