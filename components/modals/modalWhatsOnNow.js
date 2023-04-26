@@ -9,7 +9,7 @@ import defaultLogo from '../../assets/images/DBJAB_logo_100x100.png';
 
 import ModalGigDetail from './modalGigDetail'
 
-import {decode, extractImage} from '../Utilities'
+import {decode, extractImage, isIOS} from '../Utilities'
 import Colors from '../../constants/Colors';
 
 export default function ModalWhatsOnNow(props) {
@@ -31,7 +31,7 @@ export default function ModalWhatsOnNow(props) {
             <Modal //Whats On Now/Next
                 isVisible={isVisible}
                 animationInTiming={600}
-                animationOutTiming={600}
+                animationOutTiming={isIOS()?300:600}
             >
                 <ScrollView style={styles.eventList}>
                     {
@@ -51,7 +51,7 @@ export default function ModalWhatsOnNow(props) {
                                         location: event.VenueDetails
                                     });
                                     toggleEventsModal();
-                                    toggleGigDetailModal();
+                                    setTimeout(() => {toggleGigDetailModal()}, isIOS() ? 750 : 500);
                                 }}
                             >
                                 <Avatar 

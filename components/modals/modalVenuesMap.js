@@ -4,7 +4,7 @@ import { Button } from 'react-native-elements'
 import { StyleSheet, View, Dimensions, Text } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import Colors from '../../constants/Colors'
-import {decode} from '../Utilities'
+import {decode, isIOS} from '../Utilities'
 
 const mapWidth = Dimensions.get('window').width-50;
 const mapHeight = Dimensions.get('window').height-100;
@@ -43,6 +43,7 @@ export default function ModalVenuesMap(props) {
               {
                 venuesList.map((venue, idx) => {
                   return (
+                    isIOS() ? 
                     <Marker
                       key={idx}
                       coordinate={{
@@ -52,6 +53,17 @@ export default function ModalVenuesMap(props) {
                       title={decode(venue.venueName)}
                       description={venue.venueAddr}
                       image={require('../../assets/images/musicNoteMarker.png')}
+                    />
+                    :
+                    <Marker
+                      key={idx}
+                      coordinate={{
+                        latitude: venue.venueLat,
+                        longitude: venue.venueLong,
+                      }}
+                      title={decode(venue.venueName)}
+                      description={venue.venueAddr}
+                      image={require('../../assets/images/musicNoteMarker-android.png')}
                     />
                  )
                 })

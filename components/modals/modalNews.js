@@ -3,7 +3,7 @@ import Modal from "react-native-modal";
 import Accordion from 'react-native-collapsible/Accordion';
 import { Button, Avatar } from 'react-native-elements'
 import { StyleSheet, Dimensions, View, Text, TouchableOpacity } from 'react-native';
-import {removeImageSizes, extractImage} from '../Utilities'
+import {removeImageSizes} from '../Utilities'
 import defaultLogo from '../../assets/images/DBJAB_logo_100x100.png';
 
 import Colors from '../../constants/Colors'
@@ -69,13 +69,13 @@ export default function ModalNews(props) {
           sectionContainerStyle={styles.sectionContainerStyle}
           duration={750}
         />
-        </ScrollView>
         <Button 
           buttonStyle={styles.backButtonBackGround} 
           titleStyle={styles.backButtonText} 
           title="Back" 
           onPress={toggleNewsModal}
         />
+        </ScrollView>
       </Modal>
     );
 }
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
         color: Colors.secondaryColour,
     },
     accordionBackdrop: {
-      backgroundColor: Colors.secondaryColour,
+      backgroundColor: Colors.backGroundPrimary,
       width: windowWidth-75,
       alignSelf: 'center',
     },
@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
       borderWidth: 1,
     },
     overallContainer: {
-      backgroundColor: '#fff',
+      backgroundColor: Colors.backGroundPrimary,
       borderWidth: 1,
-      borderColor: Colors.primaryColour
+      borderColor: Colors.primaryColour,
+      paddingLeft: 5,
     },
     scrollViewStyle: {
-      alignContent: 'flex-end'
     }
 });

@@ -41,10 +41,11 @@ export default function App(props) {
         });
 
         await Asset.loadAsync([ 
-          require('./assets/images/banner2.png'),
+          require('./assets/images/2023_app_banner.png'),
           require('./assets/images/2023_app_splash_white.png'),
           require('./assets/images/DBJAB_logo_100x100.png'),
-          require('./assets/images/musicNoteMarker.png')
+          require('./assets/images/musicNoteMarker.png'),
+          require('./assets/images/musicNoteMarker-android.png')
         ]);
   
 
@@ -86,7 +87,7 @@ export default function App(props) {
               screenOptions={{
                 header: ( props =>  
                 <Image 
-                  source={require('./assets/images/banner2.png')}
+                  source={require('./assets/images/2023_app_banner.png')}
                   style={{...styles.imageHeader, height: homePageImageHeight}}
                   resizeMode='contain'
                 />),
@@ -106,7 +107,7 @@ export default function App(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.backGroundPrimary,
   },
   imageHeader: {
     marginTop: 20, 

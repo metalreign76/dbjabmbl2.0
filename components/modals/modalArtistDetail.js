@@ -1,10 +1,13 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { View, StyleSheet, Dimensions, Text } from 'react-native';
-import moment from 'moment';
-import { WebView } from 'react-native-webview'
+import { View, StyleSheet, Dimensions } from 'react-native';
 import Colors from '../../constants/Colors'
+import { isIOS } from '../Utilities';
+import { ScrollView } from 'react-native-gesture-handler';
+import RenderHTML from 'react-native-render-html';
+
+const windowWidth = Dimensions.get('window').width;
 
 export default function ModalArtistDetail(props) {
     const { 
@@ -30,25 +33,24 @@ export default function ModalArtistDetail(props) {
         <Modal
             isVisible={isVisible}
             animationInTiming={600}
-            animationOutTiming={600}
+            animationOutTiming={isIOS()?300:600}
         >
-            <WebView
+            <ScrollView contentContainerStyle={styles.scrollViewStyle}>
+            <RenderHTML
                 source={{ html: artistDetails}}
-                contentInset={{top: 10, left: 5, bottom: 10, right: 5}}
-                style={{
-                    backgroundColor: Colors.backGroundPrimary
-                }}
-                scalesPageToFit={false}
+                contentWidth={windowWidth-75}
+                baseStyle={styles.overallContainer}
             />
             <Button 
                 buttonStyle={styles.backButtonBackGround} 
                 titleStyle={styles.backButtonText} 
                 title="Back" 
                 onPress={() => {
+                    setTimeout(() => {togglePreviousModal()}, isIOS() ? 750 : 500);
                     toggleArtistDetailModal();
-                    togglePreviousModal();
                 }}
             />
+            </ScrollView>
         </Modal>
     );
 }
@@ -62,6 +64,13 @@ const styles = StyleSheet.create({
     },
     backButtonText: {
         color: Colors.secondaryColour,
+    },
+    overallContainer: {
+      borderWidth: 1,
+      borderColor: Colors.primaryColour,
+      backgroundColor: Colors.backGroundPrimary,
+      paddingLeft: 5,
+    },
+    scrollViewStyle: {
     }
 });
-  

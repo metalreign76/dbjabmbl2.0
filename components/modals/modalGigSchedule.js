@@ -5,7 +5,7 @@ import { Button } from 'react-native-elements'
 import { View, StyleSheet, Text } from 'react-native';
 import WeekView from 'react-native-week-view';
 import moment from 'moment';
-import { decode } from '../Utilities'
+import { decode, isIOS } from '../Utilities'
 import ModalGigDetail from './modalGigDetail'
 
 import Colors from '../../constants/Colors'
@@ -26,11 +26,11 @@ export default function ModalGigSchedule(props) {
 
     const toggleGigDetailModal = () => {
         setGigDetailModalIsVisible(!gigDetailModalIsVisible);
-    };
+    }
 
     const toggleBackToPrevDisplay = () => {
         toggleGigScheduleModal();
-        if(togglePrevModal) togglePrevModal();
+        if(togglePrevModal) setTimeout(() => {togglePrevModal()}, isIOS() ? 750 : 500);
     }
 
     React.useEffect(() => {
@@ -83,7 +83,7 @@ export default function ModalGigSchedule(props) {
             <Modal
                 isVisible={isVisible}
                 animationInTiming={600}
-                animationOutTiming={600}
+                animationOutTiming={isIOS()?300:600}
                 style={styles.container}
             >
                 <WeekView
@@ -103,7 +103,8 @@ export default function ModalGigSchedule(props) {
                     EventComponent={MyEventComponent}
                     onEventPress={(event) => {
                         setSelectedGig(gigsList[event.idx]);
-                        toggleGigDetailModal();
+                        toggleGigScheduleModal();
+                        setTimeout(() => {toggleGigDetailModal()}, isIOS()?750:500);
                     }}
                 />
                 <Button 
@@ -117,6 +118,7 @@ export default function ModalGigSchedule(props) {
                 isVisible={gigDetailModalIsVisible}
                 gigObject={selectedGig}
                 toggleGigDetailModal={toggleGigDetailModal}
+                togglePreviousModal={toggleGigScheduleModal}
             />
         </View>
     );
@@ -134,11 +136,11 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: '#FFF'
+        backgroundColor: Colors.backGroundPrimary
     },
     header: {
         backgroundColor: Colors.primaryColour,
-        borderColor: '#fff',
+        borderColor: Colors.backGroundPrimary,
     },
         headerText: {
         color: Colors.secondaryColour,

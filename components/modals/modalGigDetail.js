@@ -1,10 +1,14 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import moment from 'moment';
-import { WebView } from 'react-native-webview'
 import Colors from '../../constants/Colors'
+import { isIOS } from '../Utilities';
+import { ScrollView } from 'react-native-gesture-handler';
+import RenderHtml from 'react-native-render-html';
+
+const windowWidth = Dimensions.get('window').width;
 
 export default function ModalGigDetail(props) {
     const { 
@@ -34,15 +38,13 @@ export default function ModalGigDetail(props) {
         <Modal
             isVisible={isVisible}
             animationInTiming={600}
-            animationOutTiming={600}
+            animationOutTiming={isIOS()?300:600}
         >
-            <WebView
+            <ScrollView contentContainerStyle={styles.scrollViewStyle}>
+            <RenderHtml
                 source={{ html: eventDetails}}
-                contentInset={{top: 10, left: 5, bottom: 10, right: 5}}
-                style={{
-                    backgroundColor: Colors.backGroundPrimary
-                }}
-                scalesPageToFit={false}
+                contentWidth={windowWidth-75}
+                baseStyle={styles.overallContainer}
             />
             <Button 
                 buttonStyle={styles.backButtonBackGround} 
@@ -50,9 +52,10 @@ export default function ModalGigDetail(props) {
                 title="Back" 
                 onPress={() => {
                     toggleGigDetailModal();
-                    if(togglePreviousModal) togglePreviousModal();
+                    if(togglePreviousModal) setTimeout(() => {togglePreviousModal()}, isIOS() ? 750 : 500);
                 }}
             />
+            </ScrollView>
         </Modal>
     );
 }
@@ -66,6 +69,14 @@ const styles = StyleSheet.create({
     },
     backButtonText: {
         color: Colors.secondaryColour,
+    },
+    overallContainer: {
+      borderWidth: 1,
+      borderColor: Colors.primaryColour,
+      backgroundColor: Colors.backGroundPrimary,
+      paddingLeft: 5,
+    },
+    scrollViewStyle: {
     }
 });
   

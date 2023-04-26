@@ -7,7 +7,7 @@ import { ScrollView } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements'
 
 import Colors from '../../constants/Colors'
-import {decode, extractImage, findEarliestGigDate} from '../Utilities'
+import {decode, extractImage, isIOS} from '../Utilities'
 import ModalArtistDetail from './modalArtistDetail'
 import ModalGigSchedule from './modalGigSchedule';
 
@@ -28,7 +28,7 @@ export default function ModalArtists(props) {
     const [ selectedArtist, setSelectedArtist ] = React.useState({gigs: []});
   
     const toggleArtistDetailModal = () => {
-        setArtistDetailModalIsVisible(!artistDetailModalIsVisible);
+       setArtistDetailModalIsVisible(!artistDetailModalIsVisible);
     };
 
     const toggleGigScheduleModal = () => {
@@ -40,7 +40,7 @@ export default function ModalArtists(props) {
       <Modal //Artists
         isVisible={isVisible}
         animationInTiming={600}
-        animationOutTiming={600}
+        animationOutTiming={isIOS()?300:600}
       >
         <ScrollView style={styles.artistList}>
             {
@@ -58,9 +58,9 @@ export default function ModalArtists(props) {
                         });       
                         toggleArtistsModal();
                         if(gigsByArtistFlag)
-                          toggleGigScheduleModal();
+                          setTimeout(() => {toggleGigScheduleModal();}, isIOS()?750 : 500);
                         else
-                          toggleArtistDetailModal();
+                          setTimeout(() => {toggleArtistDetailModal();}, isIOS()?750 : 500);
                       }}
                     >
                         <Avatar 
@@ -86,14 +86,14 @@ export default function ModalArtists(props) {
       <ModalArtistDetail 
           isVisible={artistDetailModalIsVisible}
           artistObject={selectedArtist}
-          toggleArtistDetailModal={toggleArtistDetailModal}
           togglePreviousModal={toggleArtistsModal}
+          toggleArtistDetailModal={toggleArtistDetailModal}
       />
       <ModalGigSchedule 
         isVisible={gigScheduleModalIsVisible} 
         allEvents={selectedArtist.gigs}
-        toggleGigScheduleModal={toggleGigScheduleModal}
         togglePrevModal={toggleArtistsModal}
+        toggleGigScheduleModal={toggleGigScheduleModal}
       />
     </View>
   );

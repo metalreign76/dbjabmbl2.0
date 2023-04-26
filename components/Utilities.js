@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { Platform } from 'react-native';
 
 export function decode(stringToDecode) {
 
@@ -35,5 +36,13 @@ export function removeImageSizes(fullPost) {
          if(maybeEarlier < earliestDate)
          earliestDate = maybeEarlier; 
     })
-    return earliestDate;
+    let todaysDate = moment().format('YYYY-MM-DD');
+    if( todaysDate > earliestDate)
+      return todaysDate
+    else
+      return earliestDate;
+  }
+
+  export function isIOS() {
+    return Platform.OS === 'ios';
   }

@@ -7,7 +7,7 @@ import { ScrollView } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements'
 
 import Colors from '../../constants/Colors'
-import {decode, findEarliestGigDate} from '../Utilities'
+import {decode, isIOS} from '../Utilities'
 import ModalGigSchedule from './modalGigSchedule';
 
 const sliderWidth = Dimensions.get('window').width;
@@ -32,7 +32,7 @@ export default function ModalVenues(props) {
       <Modal //Venues
         isVisible={isVisible}
         animationInTiming={600}
-        animationOutTiming={600}
+        animationOutTiming={isIOS()?300:600}
       >
         <ScrollView style={styles.venuesList}>
             {
@@ -46,7 +46,7 @@ export default function ModalVenues(props) {
                           gigs: venuesGigsLists[decode(venue.venueName)]
                         });
                         toggleVenuesListModal();
-                        toggleGigScheduleModal();
+                        setTimeout(() => {toggleGigScheduleModal()}, isIOS() ? 750 : 500);
                       }}
                     >
                         <Avatar 
