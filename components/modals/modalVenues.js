@@ -2,9 +2,10 @@ import * as React from 'react';
 import {useGlobal} from 'reactn';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { StyleSheet, Dimensions, View } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import { ScrollView } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements'
+import { StyleSheet } from 'react-native-size-scaling';
 
 import Colors from '../../constants/Colors'
 import {decode, isIOS} from '../Utilities'
@@ -33,6 +34,7 @@ export default function ModalVenues(props) {
         isVisible={isVisible}
         animationInTiming={600}
         animationOutTiming={isIOS()?300:600}
+        style={{width: '90%', alignSelf: 'center'}}
       >
         <ScrollView style={styles.venuesList}>
             {
@@ -50,7 +52,7 @@ export default function ModalVenues(props) {
                       }}
                     >
                         <Avatar 
-                            source={ require('../../assets/images/DBJAB_logo_100x100.png')}
+                            source={ require('../../assets/images/2023_app_logo_100_100.png')}
                             rounded={true}
                         />
                         <ListItem.Title style={styles.venuesListItem}>{decode(venue.venueName)}</ListItem.Title>
@@ -81,6 +83,7 @@ const styles = StyleSheet.create({
   backButtonBackGround: {
       backgroundColor: Colors.primaryColour,
       marginTop: 5,
+      marginBottom: 5,
       borderWidth: 1,
       padding: 10,
       borderColor: Colors.secondaryColour
@@ -91,14 +94,16 @@ const styles = StyleSheet.create({
   venuesListItem: {
     color: Colors.primaryColour,
     fontWeight: 'bold',
-    flex: 1
+    flex: 1,
+    fontSize: 14
   },
   venuesListSubItem: {
     color: Colors.primaryColour,
-    flex: 1
+    flex: 1,
+    fontSize: 12
   },
   venuesList: {
     padding: 5,
-  },
+  }
 });
 

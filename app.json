@@ -8,9 +8,9 @@
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "2.0.9",
     "orientation": "portrait",
-    "icon": "./assets/images/DBJAB_logo_100x100.png",
+    "icon": "./assets/images/2023_app_logo_100_100.png",
     "scheme": "myapp",
     "splash": {
       "image": "./assets/images/2023_app_splash_white.png",
@@ -24,8 +24,23 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.clydehunt76.dbjabmbl2-0"
     },
-    "description": ""
+    "description": "",
+    "extra": {
+      "eas": {
+        "projectId": "166196e8-b6ee-4941-bd65-5d36a395ded1"
+      }
+    },
+    "android": {
+      "package": "com.clydehunt76.dbjabmbl2_0",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDI9KQ2GT1aPQy9KBgul01ATIWNxUuxRD8"
+        }
+      },
+      "versionCode": 9
+    }
   }
 }

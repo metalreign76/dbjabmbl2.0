@@ -1,11 +1,12 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import Colors from '../../constants/Colors'
 import { isIOS } from '../Utilities';
 import { ScrollView } from 'react-native-gesture-handler';
 import RenderHTML from 'react-native-render-html';
+import { StyleSheet } from 'react-native-size-scaling';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -34,6 +35,7 @@ export default function ModalArtistDetail(props) {
             isVisible={isVisible}
             animationInTiming={600}
             animationOutTiming={isIOS()?300:600}
+            style={{width: '90%', alignSelf: 'center'}}
         >
             <ScrollView contentContainerStyle={styles.scrollViewStyle}>
             <RenderHTML

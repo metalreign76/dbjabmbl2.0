@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { Text, Platform, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { Text, Platform, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { StyleSheet } from 'react-native-size-scaling';
 
 import Colors from '../constants/Colors';
+
+import { scaleFont } from './Utilities';
 
 const screenHeight = Dimensions.get('window').height;
 const imageHeight = 170; // set in App.js
@@ -32,7 +35,7 @@ export default function HomeNavButton(props) {
           <Text style={styles.navButtontext}>{text}</Text>
           <FontAwesome5
               name={icon}
-              size={40}
+              size={scaleFont(36)}
               style={{ marginBottom: -3 }}
               color={Colors.secondaryColour}
           />
@@ -54,7 +57,7 @@ export default function HomeNavButton(props) {
           <Text style={styles.navButtontext}>{text}</Text>
           <Ionicons
               name={Platform.OS === 'ios' ? 'ios-'+ icon : 'md-'+ icon}
-              size={40}
+              size={scaleFont(36)}
               style={{ marginBottom: -3 }}
               color={Colors.secondaryColour}
           />

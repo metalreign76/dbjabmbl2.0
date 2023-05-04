@@ -44,8 +44,9 @@ export default function App(props) {
           require('./assets/images/2023_app_banner.png'),
           require('./assets/images/2023_app_splash_white.png'),
           require('./assets/images/DBJAB_logo_100x100.png'),
+          require('./assets/images/2023_app_logo_100_100.png'),
           require('./assets/images/musicNoteMarker.png'),
-          require('./assets/images/musicNoteMarker-android.png')
+          require('./assets/images/musicNoteMarker-android.png')          
         ]);
   
 
@@ -113,5 +114,6 @@ const styles = StyleSheet.create({
     marginTop: 20, 
     width: "100%", 
     backgroundColor: Colors.backGroundPrimary,
+    alignContent: 'center'
   }
 });

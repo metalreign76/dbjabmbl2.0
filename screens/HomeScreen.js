@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native-size-scaling';
 import { ScrollView } from 'react-native';
 import Colors from '../constants/Colors'
 import HomeNavButton from '../components/HomeNavButton'
@@ -87,8 +87,6 @@ export default function HomeScreen() {
     setFestivalStartDate(findEarliestGigDate(eventsData));
 }, [eventsData])
 
-  //console.log("All Events:", eventsData);
-
   const filterByArtist = (uniqueArtistsList, uniqueArtistsDisplayList, uniqueArtistsDetail) => {
     eventsData.forEach((event) => {
       const decodedArtistName = decode(event.Title);
@@ -112,29 +110,39 @@ export default function HomeScreen() {
       }
     })
     if(uniqueArtistsDisplayList.length)
-      uniqueArtistsDisplayList.sort((a,b) => { return a.artistName > b.artistName});
+      uniqueArtistsDisplayList.sort((a,b) => { 
+        if(a.artistName > b.artistName) return 1;
+        if(a.artistName < b.artistName) return -1;
+        return 0;
+      });
     else
       uniqueArtistsDisplayList[{
         artistName: "No artists have yet been announced",
         artistInfo: ""
-      }];
+    }];
   }
 
   const filterByVenue = (uniqueVenuesList, uniqueVenuesDisplayList, uniqueVenuesGigsList) => {
     eventsData.forEach((event) => {
-      if(uniqueVenuesList.includes(event.Venue)) {
-        uniqueVenuesGigsList[event.Venue].push(event);
+      if(uniqueVenuesList.includes(decode(event.Venue))) {
+        uniqueVenuesGigsList[decode(event.Venue)].push(event);
       } else {
-        uniqueVenuesList.push(event.Venue);
+        uniqueVenuesList.push(decode(event.Venue));
         uniqueVenuesDisplayList.push({
-          venueName: event.Venue,
+          venueName: decode(event.Venue),
           venueAddr: event.VenueDetails.address,
           venueLat: parseFloat(event.VenueDetails.latitude),
           venueLong: parseFloat(event.VenueDetails.longitude)
         });
-        uniqueVenuesGigsList[event.Venue] = [ event ];
+        uniqueVenuesGigsList[decode(event.Venue)] = [ event ];
       }
     })
+    if(uniqueVenuesDisplayList.length)
+    uniqueVenuesDisplayList.sort((a,b) => { 
+      if(a.venueName > b.venueName) return 1;
+      if(a.venueName < b.venueName) return -1;
+      return 0;
+    });
   }
 
   const pressed = (key, text) => {

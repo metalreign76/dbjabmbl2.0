@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { Platform } from 'react-native';
+import { scale } from 'react-native-size-scaling';
 
 export function decode(stringToDecode) {
 
@@ -45,4 +46,8 @@ export function removeImageSizes(fullPost) {
 
   export function isIOS() {
     return Platform.OS === 'ios';
+  }
+
+  export function scaleFont(startingSize) {
+    return scale(startingSize);
   }

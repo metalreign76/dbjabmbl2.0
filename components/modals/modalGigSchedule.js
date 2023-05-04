@@ -2,11 +2,12 @@ import * as React from 'react';
 import {useGlobal} from 'reactn';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { View, StyleSheet, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import WeekView from 'react-native-week-view';
 import moment from 'moment';
 import { decode, isIOS } from '../Utilities'
 import ModalGigDetail from './modalGigDetail'
+import { StyleSheet } from 'react-native-size-scaling';
 
 import Colors from '../../constants/Colors'
 
@@ -41,11 +42,11 @@ export default function ModalGigSchedule(props) {
                 idx: idx,
                 title: decode(gigDetail.Title),
                 description: decode(gigDetail.Venue),
-                startDate: new Date(moment(gigDetail.startTime, 'X').format('YYYY-MM-DD HH:mm:00')),
-                endDate: new Date(moment(gigDetail.endTime, 'X').format('YYYY-MM-DD HH:mm:00')),
+                startDate: new Date(moment.utc(gigDetail.startTime, 'X').format('YYYY-MM-DD HH:mm:00')),
+                endDate: new Date(moment.utc(gigDetail.endTime, 'X').format('YYYY-MM-DD HH:mm:00')),
                 color: Colors.calendarColours[idx%2],
-                start: moment(gigDetail.startTime, 'X').format('YYYY-MM-DD HH:mm:00'),
-                end: moment(gigDetail.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
+                start: moment.utc(gigDetail.startTime, 'X').format('YYYY-MM-DD HH:mm:00'),
+                end: moment.utc(gigDetail.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
                 summary: decode(gigDetail.Venue),
                 detail: gigDetail.Detail,
                 thumbnail: gigDetail.Thumbnail,
@@ -58,18 +59,10 @@ export default function ModalGigSchedule(props) {
 
     const MyEventComponent = ({ event }) => (
         <>
-            <Text style={{
-                fontWeight: 'bold', 
-                color: Colors.calendarTextColours[event.color],
-                fontSize: 12
-            }}>
+            <Text style={{...styles.eventTitle, color: Colors.calendarTextColours[event.color]}}>
                 {event.title}
             </Text>
-            <Text style={{
-                fontStyle: 'italic', 
-                color: Colors.calendarTextColours[event.color],
-                fontSize: 10
-            }}>
+            <Text style={{...styles.eventLocation, color: Colors.calendarTextColours[event.color] }}>
                 {event.description}
             </Text>
         </>
@@ -136,7 +129,9 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: Colors.backGroundPrimary
+        backgroundColor: Colors.backGroundPrimary,
+        width: '90%', 
+        alignSelf: 'center'
     },
     header: {
         backgroundColor: Colors.primaryColour,
@@ -150,5 +145,13 @@ const styles = StyleSheet.create({
     },
     hourText: {
         color: Colors.secondaryColour
+    },
+    eventTitle: {
+        fontWeight: 'bold', 
+        fontSize: 11,
+    },
+    eventLocation: {
+        fontStyle: 'italic', 
+        fontSize: 10,
     }
 });

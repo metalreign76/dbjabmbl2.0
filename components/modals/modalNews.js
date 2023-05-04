@@ -2,13 +2,14 @@ import * as React from 'react';
 import Modal from "react-native-modal";
 import Accordion from 'react-native-collapsible/Accordion';
 import { Button, Avatar } from 'react-native-elements'
-import { StyleSheet, Dimensions, View, Text, TouchableOpacity } from 'react-native';
+import { Dimensions, View, Text, TouchableOpacity } from 'react-native';
 import {removeImageSizes} from '../Utilities'
-import defaultLogo from '../../assets/images/DBJAB_logo_100x100.png';
+import defaultLogo from '../../assets/images/2023_app_logo_100_100.png';
 
 import Colors from '../../constants/Colors'
 import RenderHtml from 'react-native-render-html';
 import { ScrollView } from 'react-native-gesture-handler';
+import { StyleSheet } from 'react-native-size-scaling';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -56,6 +57,7 @@ export default function ModalNews(props) {
           isVisible={isVisible}
           animationInTiming={600}
           animationOutTiming={600}
+          style={{width: '90%', alignContent: 'center'}}
       >
         <ScrollView contentContainerStyle={styles.scrollViewStyle}>
         <Accordion
@@ -83,9 +85,8 @@ export default function ModalNews(props) {
 const styles = StyleSheet.create({
     backButtonBackGround: {
         backgroundColor: Colors.primaryColour,
-        alignSelf: 'center',
         borderWidth: 1,
-        width: windowWidth-75,
+        width: '100%',
         borderColor: Colors.secondaryColour,
         marginTop: 5
         
@@ -95,14 +96,13 @@ const styles = StyleSheet.create({
     },
     accordionBackdrop: {
       backgroundColor: Colors.backGroundPrimary,
-      width: windowWidth-75,
-      alignSelf: 'center',
+      width: '100%',
     },
     headerText: {
       color: Colors.primaryColour,
       fontWeight: 'bold' ,
       marginLeft: 10,
-      alignSelf: 'center'
+      fontSize: 15,
     },
     sectionTitle: {
       marginBottom: 15,
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderColor: Colors.primaryColour,
       paddingLeft: 5,
+      fontSize: 13,
     },
     scrollViewStyle: {
     }

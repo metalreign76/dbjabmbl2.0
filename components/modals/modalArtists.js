@@ -2,9 +2,10 @@ import * as React from 'react';
 import {useGlobal} from 'reactn';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { StyleSheet, Dimensions, View } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import { ScrollView } from 'react-native';
-import { Avatar, ListItem } from 'react-native-elements'
+import { Avatar, ListItem } from 'react-native-elements';
+import { StyleSheet } from 'react-native-size-scaling';
 
 import Colors from '../../constants/Colors'
 import {decode, extractImage, isIOS} from '../Utilities'
@@ -41,6 +42,7 @@ export default function ModalArtists(props) {
         isVisible={isVisible}
         animationInTiming={600}
         animationOutTiming={isIOS()?300:600}
+        style={{width: '90%', alignSelf: 'center'}}
       >
         <ScrollView style={styles.artistList}>
             {
@@ -66,7 +68,7 @@ export default function ModalArtists(props) {
                         <Avatar 
                             source={ artist.artistImage.length ? { 
                                       uri: extractImage(artist.artistImage) } :
-                                      require('../../assets/images/DBJAB_logo_100x100.png')
+                                      require('../../assets/images/2023_app_logo_100_100.png')
                             }
                             rounded={true}
                         />
@@ -103,6 +105,7 @@ const styles = StyleSheet.create({
   backButtonBackGround: {
       backgroundColor: Colors.primaryColour,
       marginTop: 5,
+      marginBottom: 5,
       borderWidth: 1,
       padding: 10,
       borderColor: Colors.secondaryColour
@@ -112,7 +115,8 @@ const styles = StyleSheet.create({
   },
   artistsListItem: {
     color: Colors.primaryColour,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: 14
   },
   artistList: {
     padding: 5,

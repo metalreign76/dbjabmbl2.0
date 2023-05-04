@@ -1,11 +1,12 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { ScrollView } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements'
 import moment from 'moment';
-import defaultLogo from '../../assets/images/DBJAB_logo_100x100.png';
+import { StyleSheet } from 'react-native-size-scaling';
+import defaultLogo from '../../assets/images/2023_app_logo_100_100.png';
 
 import ModalGigDetail from './modalGigDetail'
 
@@ -32,7 +33,7 @@ export default function ModalWhatsOnNow(props) {
                 isVisible={isVisible}
                 animationInTiming={600}
                 animationOutTiming={isIOS()?300:600}
-            >
+                style={{width: '95%', alignSelf: 'center'}}>
                 <ScrollView style={styles.eventList}>
                     {
                         eventsList.map((event, idx) => {
@@ -43,8 +44,8 @@ export default function ModalWhatsOnNow(props) {
                                     if(!event.Venue) return;
                                     setSelectedGig({
                                         title: decode(event.Title),
-                                        start: moment(event.startTime, 'X').format('YYYY-MM-DD HH:mm:00'),
-                                        end: moment(event.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
+                                        start: moment.utc(event.startTime, 'X').format('YYYY-MM-DD HH:mm:00'),
+                                        end: moment.utc(event.endTime, 'X').format('YYYY-MM-DD HH:mm:00'),
                                         summary: event.Venue,
                                         detail: event.Detail ,
                                         thumbnail: event.Thumbnail,
@@ -66,9 +67,9 @@ export default function ModalWhatsOnNow(props) {
                                     + "\n" 
                                     + moment(event.Date).format('dddd') 
                                     + ", " 
-                                    + moment(event.startTime, 'X').format('h:mma') 
+                                    + moment.utc(event.startTime, 'X').format('h:mma') 
                                     + " - " 
-                                    + moment(event.endTime, 'X').format('h:mma') 
+                                    + moment.utc(event.endTime, 'X').format('h:mma') 
                                     : ""}
                                 </ListItem.Subtitle>
                             </ListItem>
@@ -95,7 +96,7 @@ export default function ModalWhatsOnNow(props) {
 
 const styles = StyleSheet.create({
     eventList: {
-        padding: 10
+        padding: 10,
     },
     backButtonBackGround: {
         backgroundColor: Colors.primaryColour,
@@ -109,10 +110,12 @@ const styles = StyleSheet.create({
     eventsListItem: {
         color: Colors.primaryColour,
         fontWeight: 'bold',
-        flex: 2
+        flex: 2,
+        fontSize: 14,
     },
     eventsSubtitle: {
         color: Colors.primaryColour,
-        flex: 1
+        flex: 1,
+        fontSize: 12,
     }
 });

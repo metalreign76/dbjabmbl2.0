@@ -1,11 +1,12 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { StyleSheet, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import moment from 'moment';
 import Colors from '../../constants/Colors'
 import { isIOS } from '../Utilities';
 import { ScrollView } from 'react-native-gesture-handler';
+import { StyleSheet } from 'react-native-size-scaling';
 import RenderHtml from 'react-native-render-html';
 
 const windowWidth = Dimensions.get('window').width;
@@ -39,7 +40,8 @@ export default function ModalGigDetail(props) {
             isVisible={isVisible}
             animationInTiming={600}
             animationOutTiming={isIOS()?300:600}
-        >
+            style={{width: '90%', alignSelf: 'center'}}
+            >
             <ScrollView contentContainerStyle={styles.scrollViewStyle}>
             <RenderHtml
                 source={{ html: eventDetails}}
