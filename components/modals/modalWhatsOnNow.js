@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     },
     eventsListItem: {
         color: Colors.primaryColour,
-        fontWeight: 'bold',
+        fontWeight: isIOS() ? 600 : 'bold',
         flex: 2,
         fontSize: 14,
     },

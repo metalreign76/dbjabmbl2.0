@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
         color: Colors.secondaryColour
     },
     eventTitle: {
-        fontWeight: 'bold', 
+        fontWeight: '500', 
         fontSize: 11,
     },
     eventLocation: {

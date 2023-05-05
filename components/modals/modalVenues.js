@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   venuesListItem: {
     color: Colors.primaryColour,
-    fontWeight: 'bold',
+    fontWeight: isIOS() ? 600 : 'bold',
     flex: 1,
     fontSize: 14
   },

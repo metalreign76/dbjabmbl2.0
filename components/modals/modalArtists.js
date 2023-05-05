@@ -115,8 +115,9 @@ const styles = StyleSheet.create({
   },
   artistsListItem: {
     color: Colors.primaryColour,
-    fontWeight: 'bold',
-    fontSize: 14
+    fontWeight: isIOS() ? 600 : 'bold',
+    fontSize: 14,
+    flex: 1,
   },
   artistList: {
     padding: 5,

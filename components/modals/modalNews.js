@@ -3,7 +3,7 @@ import Modal from "react-native-modal";
 import Accordion from 'react-native-collapsible/Accordion';
 import { Button, Avatar } from 'react-native-elements'
 import { Dimensions, View, Text, TouchableOpacity } from 'react-native';
-import {removeImageSizes} from '../Utilities'
+import {removeImageSizes, isIOS} from '../Utilities'
 import defaultLogo from '../../assets/images/2023_app_logo_100_100.png';
 
 import Colors from '../../constants/Colors'
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     },
     headerText: {
       color: Colors.primaryColour,
-      fontWeight: 'bold' ,
+      fontWeight: isIOS() ? 600 : 'bold' ,
       marginLeft: 10,
       fontSize: 15,
     },
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
       marginTop: 15,
       marginLeft: 5,
       flexDirection: 'row',
+      flex: 1,
     },
     sectionContainerStyle: {
       borderColor: Colors.primaryColour,

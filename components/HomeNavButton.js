@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native-size-scaling';
 
 import Colors from '../constants/Colors';
 
-import { scaleFont } from './Utilities';
+import { scaleFont, isIOS } from './Utilities';
 
 const screenHeight = Dimensions.get('window').height;
 const imageHeight = 170; // set in App.js
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     },
     navButtontext : {
         color: Colors.secondaryColour,
-        fontWeight: 'bold',
+        fontWeight: isIOS() ? 600 : 'bold',
         paddingBottom: 5,
         fontSize: 20,
     }
