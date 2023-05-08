@@ -10,6 +10,7 @@ import Colors from '../../constants/Colors'
 import RenderHtml from 'react-native-render-html';
 import { ScrollView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native-size-scaling';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -53,6 +54,9 @@ export default function ModalNews(props) {
     };
 
     return (
+      <GestureRecognizer
+            onSwipeLeft={toggleNewsModal}
+        >
       <Modal //News 
           isVisible={isVisible}
           animationInTiming={600}
@@ -79,6 +83,7 @@ export default function ModalNews(props) {
         />
         </ScrollView>
       </Modal>
+      </GestureRecognizer>
     );
 }
 

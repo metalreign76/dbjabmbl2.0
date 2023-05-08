@@ -11,6 +11,7 @@ import Colors from '../../constants/Colors'
 import {decode, extractImage, isIOS} from '../Utilities'
 import ModalArtistDetail from './modalArtistDetail'
 import ModalGigSchedule from './modalGigSchedule';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 const sliderWidth = Dimensions.get('window').width;
 
@@ -38,6 +39,9 @@ export default function ModalArtists(props) {
 
     return (
       <View>
+      <GestureRecognizer
+            onSwipeLeft={toggleArtistsModal}
+      >
       <Modal //Artists
         isVisible={isVisible}
         animationInTiming={600}
@@ -91,6 +95,7 @@ export default function ModalArtists(props) {
           togglePreviousModal={toggleArtistsModal}
           toggleArtistDetailModal={toggleArtistDetailModal}
       />
+    </GestureRecognizer>
       <ModalGigSchedule 
         isVisible={gigScheduleModalIsVisible} 
         allEvents={selectedArtist.gigs}

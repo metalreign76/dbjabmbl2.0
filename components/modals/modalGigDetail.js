@@ -8,6 +8,7 @@ import { isIOS } from '../Utilities';
 import { ScrollView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native-size-scaling';
 import RenderHtml from 'react-native-render-html';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -36,6 +37,12 @@ export default function ModalGigDetail(props) {
     }, [gigObject])
 
     return (
+        <GestureRecognizer
+            onSwipeLeft={() => {
+                toggleGigDetailModal();
+                if(togglePreviousModal) setTimeout(() => {togglePreviousModal()}, isIOS() ? 750 : 500);
+            }}
+        >
         <Modal
             isVisible={isVisible}
             animationInTiming={600}
@@ -59,6 +66,7 @@ export default function ModalGigDetail(props) {
             />
             </ScrollView>
         </Modal>
+        </GestureRecognizer>
     );
 }
 

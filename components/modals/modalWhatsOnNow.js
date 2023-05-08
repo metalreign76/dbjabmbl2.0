@@ -12,6 +12,7 @@ import ModalGigDetail from './modalGigDetail'
 
 import {decode, extractImage, isIOS} from '../Utilities'
 import Colors from '../../constants/Colors';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 export default function ModalWhatsOnNow(props) {
     const { 
@@ -29,6 +30,9 @@ export default function ModalWhatsOnNow(props) {
 
     return (
         <View>
+            <GestureRecognizer
+                    onSwipeLeft={toggleEventsModal}
+            >
             <Modal //Whats On Now/Next
                 isVisible={isVisible}
                 animationInTiming={600}
@@ -84,6 +88,7 @@ export default function ModalWhatsOnNow(props) {
                     />
                 </ScrollView>
             </Modal>
+            </GestureRecognizer>
             <ModalGigDetail 
                 isVisible={gigDetailModalIsVisible}
                 gigObject={selectedGig}

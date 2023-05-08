@@ -1,12 +1,13 @@
 import * as React from 'react';
 import Modal from "react-native-modal";
 import { Button } from 'react-native-elements'
-import { Dimensions } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import Colors from '../../constants/Colors'
 import { isIOS } from '../Utilities';
 import { ScrollView } from 'react-native-gesture-handler';
 import RenderHTML from 'react-native-render-html';
 import { StyleSheet } from 'react-native-size-scaling';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -31,6 +32,13 @@ export default function ModalArtistDetail(props) {
     }, [artistObject])
 
     return (
+        <View>
+        <GestureRecognizer
+                onSwipeLeft={() => {
+                    toggleArtistDetailModal();
+                    setTimeout(() => {togglePreviousModal()}, isIOS() ? 750 : 500);
+                }}
+        >
         <Modal
             isVisible={isVisible}
             animationInTiming={600}
@@ -48,12 +56,14 @@ export default function ModalArtistDetail(props) {
                 titleStyle={styles.backButtonText} 
                 title="Back" 
                 onPress={() => {
-                    setTimeout(() => {togglePreviousModal()}, isIOS() ? 750 : 500);
                     toggleArtistDetailModal();
+                    setTimeout(() => {togglePreviousModal()}, isIOS() ? 750 : 500);
                 }}
             />
             </ScrollView>
         </Modal>
+        </GestureRecognizer>
+        </View>
     );
 }
 

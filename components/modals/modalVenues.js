@@ -10,6 +10,7 @@ import { StyleSheet } from 'react-native-size-scaling';
 import Colors from '../../constants/Colors'
 import {decode, isIOS} from '../Utilities'
 import ModalGigSchedule from './modalGigSchedule';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 const sliderWidth = Dimensions.get('window').width;
 
@@ -30,6 +31,9 @@ export default function ModalVenues(props) {
 
     return (
       <View>
+      <GestureRecognizer
+            onSwipeLeft={toggleVenuesListModal}
+      >
       <Modal //Venues
         isVisible={isVisible}
         animationInTiming={600}
@@ -69,6 +73,7 @@ export default function ModalVenues(props) {
             />
         </ScrollView>
       </Modal>
+      </GestureRecognizer>
       <ModalGigSchedule 
         isVisible={gigScheduleModalIsVisible} 
         allEvents={selectedVenue.gigs}
